@@ -2,8 +2,6 @@ package org.alkemy.challenge.java.controllers;
 
 import java.util.Collections;
 
-import com.sendgrid.SendGrid;
-
 import org.alkemy.challenge.java.DTOs.LoginDTO;
 import org.alkemy.challenge.java.DTOs.RegisterDTO;
 import org.alkemy.challenge.java.entities.Role;

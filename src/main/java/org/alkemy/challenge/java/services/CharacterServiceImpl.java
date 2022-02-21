@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
+import org.alkemy.challenge.java.DTOs.MovieDTO;
+import org.alkemy.challenge.java.DTOs.response.CharacterDetailsResponse;
+import org.alkemy.challenge.java.DTOs.response.CharacterResponse;
 import org.alkemy.challenge.java.entities.Character;
 import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
@@ -36,16 +39,17 @@ public class CharacterServiceImpl implements ICharacterService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CharacterDTO> read() {
+    public List<CharacterResponse> read() {
         List<Character> characters = iCharacterRepository.findAll();
-        return characters.stream().map(character -> modelMapper.map(character, CharacterDTO.class)).collect(Collectors.toList());
+        return characters.stream().map(character -> modelMapper.map(character, CharacterResponse.class)).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CharacterDTO readById(Long id) {
+    public CharacterDetailsResponse readById(Long id) {
         Character character = iCharacterRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Character", "id", id));
-        return modelMapper.map(character, CharacterDTO.class);
+        CharacterDTO characterDTO = modelMapper.map(character, CharacterDTO.class);
+        return modelMapper.map(characterDTO, CharacterDetailsResponse.class);
     }
 
     @Override
@@ -94,6 +98,31 @@ public class CharacterServiceImpl implements ICharacterService {
     public void delete(Long id) {
         Character character = iCharacterRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Character", "id", id));
         iCharacterRepository.delete(character);
+    }
+
+    @Override
+    public CharacterDetailsResponse linkWithMovie(Long idCharacter, Long idMovie) {
+        Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        CharacterDTO characterDTO = modelMapper.map(character, CharacterDTO.class);
+        MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
+        Character characterTemporary = null;
+        Movie movieTemporary = null;
+        if(characterDTO.addMovie(movieDTO)){
+            characterTemporary = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));
+            movieTemporary = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));
+        }
+            // CREATE EXCEPTION
+        CharacterDTO characterFinal = modelMapper.map(characterTemporary, CharacterDTO.class);
+        characterFinal.addMovie(modelMapper.map(movieTemporary, MovieDTO.class));
+        return modelMapper.map(characterFinal, CharacterDetailsResponse.class);
+    }
+
+    @Override
+    public CharacterDetailsResponse addMovie(Long idCharacter, MovieDTO movieDTO) {
+        Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
+        Movie movie = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));
+        return linkWithMovie(character.getId(), movie.getId());
     }
     
 }

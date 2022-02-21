@@ -13,21 +13,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "movies")
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+//@Data
+@Getter
+@Setter
 public class Movie implements Serializable {
     
     @Id
@@ -45,14 +53,18 @@ public class Movie implements Serializable {
     
     private Integer qualification;
     
-    //@JsonBackReference
-    @ManyToMany(mappedBy = "movies")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    //@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "movie_character",
+        joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "movie_id"),
+        inverseJoinColumns = @JoinColumn(name = "character_id", referencedColumnName = "character_id"))
+    @JsonManagedReference
     private List<Character> characters = new ArrayList<>();
 
     // SIEMPRE EN @ManyToOne PONER fetch = FetchType.LAZY PORQUE POR DEFECTO ES fetch = FetchType.EAGER
-    //@JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "gender_id")
+    @JsonBackReference
     private Gender gender;
 
 }

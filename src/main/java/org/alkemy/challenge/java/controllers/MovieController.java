@@ -2,6 +2,7 @@ package org.alkemy.challenge.java.controllers;
 
 import javax.validation.Valid;
 
+import org.alkemy.challenge.java.DTOs.CharacterDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.services.interfaces.IMovieService;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,16 @@ public class MovieController {
     @PostMapping
     public ResponseEntity<?> createMovie(@Valid @RequestBody MovieDTO movieDTO){
         return new ResponseEntity<>(iMovieService.create(movieDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{idMovie}/character/{idCharacter}")
+    public ResponseEntity<?> linkWithMovie(@PathVariable Long idMovie, @PathVariable Long idCharacter){
+        return new ResponseEntity<>(iMovieService.linkWithCharacter(idMovie, idCharacter), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> addMovie(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO){
+        return new ResponseEntity<>(iMovieService.addCharacter(id, characterDTO), HttpStatus.ACCEPTED);
     }
 
     @PutMapping

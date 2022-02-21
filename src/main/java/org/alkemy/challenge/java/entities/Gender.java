@@ -14,6 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,8 +39,8 @@ public class Gender implements Serializable{
     @NotBlank
     private String image;
 
-    //@JsonManagedReference
     @OneToMany(mappedBy = "gender", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Movie> movies = new ArrayList<>();
 
     // COMUNICACIÓN ACTIVA

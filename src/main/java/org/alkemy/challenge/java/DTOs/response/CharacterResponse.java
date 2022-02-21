@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class CharacterResponse {
 
     private String image;
+    
     private String name;
     
 }

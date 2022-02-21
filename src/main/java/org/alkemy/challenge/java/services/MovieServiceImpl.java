@@ -3,10 +3,15 @@ package org.alkemy.challenge.java.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.alkemy.challenge.java.DTOs.CharacterDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
+import org.alkemy.challenge.java.DTOs.response.MovieDetailsResponse;
+import org.alkemy.challenge.java.DTOs.response.MovieResponse;
+import org.alkemy.challenge.java.entities.Character;
 import org.alkemy.challenge.java.entities.Gender;
 import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
+import org.alkemy.challenge.java.repositories.ICharacterRepository;
 import org.alkemy.challenge.java.repositories.IGenderRepository;
 import org.alkemy.challenge.java.repositories.IMovieRepository;
 import org.alkemy.challenge.java.services.interfaces.IMovieService;
@@ -26,6 +31,9 @@ public class MovieServiceImpl implements IMovieService {
     private IMovieRepository iMovieRepository;
 
     @Autowired
+    private ICharacterRepository iCharacterRepository;
+
+    @Autowired
     private IGenderRepository iGenderRepository;
 
     @Autowired
@@ -40,8 +48,8 @@ public class MovieServiceImpl implements IMovieService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovieDTO> read() {
-        return iMovieRepository.findAll().stream().map(movie -> modelMapper.map(movie, MovieDTO.class)).collect(Collectors.toList());
+    public List<MovieResponse> read() {
+        return iMovieRepository.findAll().stream().map(movie -> modelMapper.map(movie, MovieResponse.class)).collect(Collectors.toList());
     }
 
     @Override
@@ -57,9 +65,10 @@ public class MovieServiceImpl implements IMovieService {
 
     @Override
     @Transactional(readOnly = true)
-    public MovieDTO readById(Long id){
+    public MovieDetailsResponse readById(Long id){
         Movie movie = iMovieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", id));
-        return modelMapper.map(movie, MovieDTO.class);
+        MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
+        return modelMapper.map(movieDTO, MovieDetailsResponse.class);
     }
 
     @Override
@@ -93,6 +102,31 @@ public class MovieServiceImpl implements IMovieService {
     public void delete(Long id) {
         Movie movie = iMovieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", id));
         iMovieRepository.delete(movie);
+    }
+
+    @Override
+    public MovieDetailsResponse linkWithCharacter(Long idMovie, Long idCharacter) {
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
+        MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
+        CharacterDTO characterDTO = modelMapper.map(character, CharacterDTO.class);
+        Movie movieTemporary = null;
+        Character characterTemporary = null;
+        if(movieDTO.addCharacter(characterDTO)){
+            movieTemporary = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));
+            characterTemporary = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));
+        }
+            // CREATE EXCEPTION
+        MovieDTO movieFinal = modelMapper.map(movieTemporary, MovieDTO.class);
+        movieFinal.addCharacter(modelMapper.map(characterTemporary, CharacterDTO.class));    
+        return modelMapper.map(movieFinal, MovieDetailsResponse.class);
+    }
+
+    @Override
+    public MovieDetailsResponse addCharacter(Long idMovie, CharacterDTO characterDTO) {
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        Character character = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));
+        return linkWithCharacter(movie.getId(), character.getId());
     }
     
 }
