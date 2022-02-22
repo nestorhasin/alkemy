@@ -23,7 +23,7 @@ public class EmailServiceImpl implements IEmailService {
     
     @Autowired
     private SendGrid sendGrid;
-
+    
     @Override
     public void sendEmail(User user) {
         Mail mail = buildMail(user.getEmail());

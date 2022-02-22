@@ -22,9 +22,9 @@ public class DatabaseJDBC {
             try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 Statement statement = connection.createStatement()){
                 if(statement.execute(SQL)){
-                    System.out.println("[SUCCESS] Database successfull");
+                    System.out.println("[SUCCESS] Database created");
                 }else{
-                    System.out.println("[FAILURE] Database failure");
+                    System.out.println("[WARNING] Database is already created");
                 }
             }catch(SQLException sqlException){
                 sqlException.printStackTrace(System.out);
