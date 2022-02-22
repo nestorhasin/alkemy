@@ -72,9 +72,9 @@ public class AuthController {
         Role role = iRoleRepository.findByName("ROLE_ADMIN").get();
         user.setRoles(Collections.singleton(role));
         User userRegister = iUserRepository.save(user);
-        iEmailService.sendEmail(userRegister);
-        //return new ResponseEntity<>(userRegister, HttpStatus.OK);
-        return new ResponseEntity<>("[SUCCESS] Registration successfull", HttpStatus.OK);
+        iEmailService.sendText(userRegister.getEmail());
+        return new ResponseEntity<>(userRegister, HttpStatus.OK);
+        //return new ResponseEntity<>("[SUCCESS] Registration successfull", HttpStatus.OK);
     }
 
 }

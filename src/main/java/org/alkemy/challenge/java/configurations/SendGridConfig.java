@@ -5,14 +5,16 @@ import com.sendgrid.SendGrid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import lombok.Getter;
 
 @Configuration
+@PropertySource("classpath:application.properties")
 public class SendGridConfig {
     
     @Getter
-    @Value("${sendGridKey}")
+    @Value("${spring.sendgrid.api-key}")
     private String sendGridKey;
 
     @Bean

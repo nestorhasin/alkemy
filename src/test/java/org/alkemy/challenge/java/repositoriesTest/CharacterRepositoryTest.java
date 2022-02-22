@@ -3,9 +3,7 @@ package org.alkemy.challenge.java.repositoriesTest;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
@@ -16,7 +14,6 @@ import org.alkemy.challenge.java.entities.Character;
 import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
 import org.alkemy.challenge.java.repositories.ICharacterRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
