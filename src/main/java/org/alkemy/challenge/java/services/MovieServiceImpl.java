@@ -54,12 +54,10 @@ public class MovieServiceImpl implements IMovieService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MovieDTO> readPage(String sortBy, String order){
-        sortBy = "creationDate";
+    public List<MovieDTO> readByOrder(String order){
+        String sortBy = "creationDate";
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name())? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(sortBy));
-        Page<Movie> moviesPage = iMovieRepository.findAll(pageable);
-        List<Movie> movies = moviesPage.getContent();
+        List<Movie> movies = iMovieRepository.findAll(sort);
         return movies.stream().map(movie -> modelMapper.map(movie, MovieDTO.class)).collect(Collectors.toList());
     }
 
@@ -105,6 +103,7 @@ public class MovieServiceImpl implements IMovieService {
     }
 
     @Override
+    @Transactional
     public MovieDetailsResponse linkWithCharacter(Long idMovie, Long idCharacter) {
         Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
         Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
@@ -118,6 +117,7 @@ public class MovieServiceImpl implements IMovieService {
     }
 
     @Override
+    @Transactional
     public MovieDetailsResponse addCharacter(Long idMovie, CharacterDTO characterDTO) {
         Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
         Character character = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));

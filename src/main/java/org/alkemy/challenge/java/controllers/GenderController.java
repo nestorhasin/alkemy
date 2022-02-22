@@ -19,32 +19,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/genders")
 public class GenderController {
-    
+
     @Autowired
     private IGenderService iGenderService;
 
     @GetMapping
-    public ResponseEntity<?> getGenders(){
+    public ResponseEntity<?> getGenders() {
         return new ResponseEntity<>(iGenderService.read(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getGender(@PathVariable Long id){
+    public ResponseEntity<?> getGender(@PathVariable Long id) {
         return new ResponseEntity<>(iGenderService.readById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createGender(@Valid @RequestBody GenderDTO genderDTO){
+    public ResponseEntity<?> createGender(@Valid @RequestBody GenderDTO genderDTO) {
         return new ResponseEntity<>(iGenderService.create(genderDTO), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<?> updateGender(@Valid @RequestBody GenderDTO genderDTO){
+    public ResponseEntity<?> updateGender(@Valid @RequestBody GenderDTO genderDTO) {
         return new ResponseEntity<>(iGenderService.update(genderDTO), HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGender(@PathVariable Long id){
+    public ResponseEntity<?> deleteGender(@PathVariable Long id) {
         iGenderService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

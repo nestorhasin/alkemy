@@ -101,6 +101,7 @@ public class CharacterServiceImpl implements ICharacterService {
     }
 
     @Override
+    @Transactional
     public CharacterDetailsResponse linkWithMovie(Long idCharacter, Long idMovie) {
         Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
         Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
@@ -114,6 +115,7 @@ public class CharacterServiceImpl implements ICharacterService {
     }
 
     @Override
+    @Transactional
     public CharacterDetailsResponse addMovie(Long idCharacter, MovieDTO movieDTO) {
         Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
         Movie movie = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));

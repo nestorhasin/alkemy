@@ -13,7 +13,7 @@ public interface IMovieService {
     MovieDetailsResponse readById(Long id);
         List<MovieDTO> readAllByTitle(String title);
         List<MovieDTO> readAllByGender(Long id);
-        List<MovieDTO> readPage(String sortBy, String order);
+        List<MovieDTO> readByOrder(String order);
     MovieDTO update(MovieDTO movieDTO);
     void delete(Long id);
     MovieDetailsResponse linkWithCharacter(Long idMovie, Long idCharacter);

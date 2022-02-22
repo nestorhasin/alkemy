@@ -21,49 +21,54 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/movies")
 public class MovieController {
-    
+
     @Autowired
     private IMovieService iMovieService;
 
     @GetMapping
     public ResponseEntity<?> getMovies(
-        @RequestParam(value = "name", required = false) String title,
-        @RequestParam(value = "gender", required = false) Long gender,
-        @RequestParam(value = "sortBy", required = false) String sortBy,
-        @RequestParam(value = "order", required = false) String order){
-        if(title != null) return new ResponseEntity<>(iMovieService.readAllByTitle(title), HttpStatus.OK);
-        if(gender != null) return new ResponseEntity<>(iMovieService.readAllByGender(gender), HttpStatus.OK);
-        if(order != null) return new ResponseEntity<>(iMovieService.readPage(sortBy, order), HttpStatus.OK);
+            @RequestParam(value = "name", required = false) String title,
+            @RequestParam(value = "gender", required = false) Long gender,
+            @RequestParam(value = "order", required = false) String order) {
+        if (title != null) {
+            return new ResponseEntity<>(iMovieService.readAllByTitle(title), HttpStatus.OK);
+        }
+        if (gender != null) {
+            return new ResponseEntity<>(iMovieService.readAllByGender(gender), HttpStatus.OK);
+        }
+        if (order != null) {
+            return new ResponseEntity<>(iMovieService.readByOrder(order), HttpStatus.OK);
+        }
         return new ResponseEntity<>(iMovieService.read(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMovie(@PathVariable Long id){
+    public ResponseEntity<?> getMovie(@PathVariable Long id) {
         return new ResponseEntity<>(iMovieService.readById(id), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createMovie(@Valid @RequestBody MovieDTO movieDTO){
+    public ResponseEntity<?> createMovie(@Valid @RequestBody MovieDTO movieDTO) {
         return new ResponseEntity<>(iMovieService.create(movieDTO), HttpStatus.CREATED);
     }
 
     @PostMapping("/{idMovie}/character/{idCharacter}")
-    public ResponseEntity<?> linkWithMovie(@PathVariable Long idMovie, @PathVariable Long idCharacter){
+    public ResponseEntity<?> linkWithMovie(@PathVariable Long idMovie, @PathVariable Long idCharacter) {
         return new ResponseEntity<>(iMovieService.linkWithCharacter(idMovie, idCharacter), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<?> addMovie(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO){
+    public ResponseEntity<?> addMovie(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO) {
         return new ResponseEntity<>(iMovieService.addCharacter(id, characterDTO), HttpStatus.ACCEPTED);
     }
 
     @PutMapping
-    public ResponseEntity<?> updateMovie(@Valid @RequestBody MovieDTO movieDTO){
+    public ResponseEntity<?> updateMovie(@Valid @RequestBody MovieDTO movieDTO) {
         return new ResponseEntity<>(iMovieService.update(movieDTO), HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id){
+    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
         iMovieService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
