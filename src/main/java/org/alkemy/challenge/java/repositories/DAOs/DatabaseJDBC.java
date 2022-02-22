@@ -16,13 +16,16 @@ public class DatabaseJDBC {
         //@Value("${spring.datasource.password}")
         private static String PASSWORD = "admin";
     
-        private static final String SQL = "CREATE DATABASE alkemy";
+        private static final String SQL = "CREATE DATABASE IF NOT EXISTS alkemy";
         
         public static void createDatabase(){
             try(Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
                 Statement statement = connection.createStatement()){
-                Boolean response = statement.execute(SQL);
-                System.out.println("Database created successfully...");
+                if(statement.execute(SQL)){
+                    System.out.println("[SUCCESS] Database successfull");
+                }else{
+                    System.out.println("[FAILURE] Database failure");
+                }
             }catch(SQLException sqlException){
                 sqlException.printStackTrace(System.out);
             }

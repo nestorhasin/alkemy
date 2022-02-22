@@ -10,7 +10,6 @@ import org.alkemy.challenge.java.repositories.IRoleRepository;
 import org.alkemy.challenge.java.repositories.IUserRepository;
 import org.alkemy.challenge.java.securities.JWTAuthResponseDTO;
 import org.alkemy.challenge.java.securities.JwtTokenProvider;
-import org.alkemy.challenge.java.services.EmailServiceImpl;
 import org.alkemy.challenge.java.services.interfaces.IEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

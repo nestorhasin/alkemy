@@ -2,9 +2,7 @@ package org.alkemy.challenge.java.controllersTest;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
 import org.alkemy.challenge.java.controllers.CharacterController;
-import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
 import org.alkemy.challenge.java.services.interfaces.ICharacterService;
-import org.alkemy.challenge.java.utils.CharacterUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +11,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import static org.hamcrest.Matchers.*;
-
-import java.util.Arrays;
-import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
