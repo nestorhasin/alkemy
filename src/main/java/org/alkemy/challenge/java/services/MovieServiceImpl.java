@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
+import org.alkemy.challenge.java.DTOs.GenderDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.DTOs.response.MovieDetailsResponse;
 import org.alkemy.challenge.java.DTOs.response.MovieResponse;
@@ -122,6 +123,26 @@ public class MovieServiceImpl implements IMovieService {
         Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
         Character character = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));
         return linkWithCharacter(movie.getId(), character.getId());
+    }
+
+    @Override
+    public MovieDetailsResponse linkWithGender(Long idMovie, Long idGender) {
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        Gender gender= iGenderRepository.findById(idGender).orElseThrow(() -> new ResourceNotFoundException("Gender", "id", idGender));
+        movie.addGender(gender);
+        Movie movieFinal = iMovieRepository.save(movie);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        GenderDTO genderDTO = modelMapper.map(movieFinal.getGender(), GenderDTO.class);
+        MovieDetailsResponse movieDetailsResponse = modelMapper.map(movieFinal, MovieDetailsResponse.class);
+        movieDetailsResponse.setGenderDTO(genderDTO);;
+        return movieDetailsResponse;
+    }
+
+    @Override
+    public MovieDetailsResponse addGender(Long idMovie, GenderDTO genderDTO) {
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        Gender gender = iGenderRepository.save(modelMapper.map(genderDTO, Gender.class));
+        return linkWithGender(movie.getId(), gender.getId());
     }
     
 }

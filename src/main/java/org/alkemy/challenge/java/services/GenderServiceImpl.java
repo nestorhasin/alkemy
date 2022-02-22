@@ -4,9 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.alkemy.challenge.java.DTOs.GenderDTO;
+import org.alkemy.challenge.java.DTOs.MovieDTO;
+import org.alkemy.challenge.java.DTOs.response.GenderDetailsResponse;
 import org.alkemy.challenge.java.entities.Gender;
+import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
 import org.alkemy.challenge.java.repositories.IGenderRepository;
+import org.alkemy.challenge.java.repositories.IMovieRepository;
 import org.alkemy.challenge.java.services.interfaces.IGenderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,9 @@ public class GenderServiceImpl implements IGenderService {
 
     @Autowired
     private IGenderRepository iGenderRepository;
+
+    @Autowired
+    private IMovieRepository iMovieRepository;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -57,6 +64,26 @@ public class GenderServiceImpl implements IGenderService {
     public void delete(Long id) {
         Gender gender = iGenderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Gender", "id", id));
         iGenderRepository.delete(gender);
+    }
+
+    @Override
+    public GenderDetailsResponse linkWithMovie(Long idGender, Long idMovie) {
+        Gender gender = iGenderRepository.findById(idGender).orElseThrow(() -> new ResourceNotFoundException("Gender", "id", idGender));
+        Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
+        gender.addMovie(movie);
+        Gender genderFinal = iGenderRepository.save(gender);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        List<MovieDTO> movieDTOs = genderFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
+        GenderDetailsResponse genderDetailsResponse = modelMapper.map(genderFinal, GenderDetailsResponse.class);
+        genderDetailsResponse.setMovieDTOs(movieDTOs);
+        return genderDetailsResponse;
+    }
+
+    @Override
+    public GenderDetailsResponse addMovie(Long id, MovieDTO movieDTO) {
+        Gender gender = iGenderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Gender", "id", id));
+        Movie movie = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));
+        return linkWithMovie(gender.getId(), movie.getId());
     }
     
 }

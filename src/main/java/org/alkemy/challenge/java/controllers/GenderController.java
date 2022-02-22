@@ -3,6 +3,7 @@ package org.alkemy.challenge.java.controllers;
 import javax.validation.Valid;
 
 import org.alkemy.challenge.java.DTOs.GenderDTO;
+import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.services.interfaces.IGenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,16 @@ public class GenderController {
     @PostMapping
     public ResponseEntity<?> createGender(@Valid @RequestBody GenderDTO genderDTO) {
         return new ResponseEntity<>(iGenderService.create(genderDTO), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{idGenre}/movie/{idMovie}")
+    public ResponseEntity<?> linkWithMovie(@PathVariable Long idGenre, @PathVariable Long idMovie) {
+        return new ResponseEntity<>(iGenderService.linkWithMovie(idGenre, idMovie), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<?> addMovie(@PathVariable Long id, @Valid @RequestBody MovieDTO movieDTO) {
+        return new ResponseEntity<>(iGenderService.addMovie(id, movieDTO), HttpStatus.ACCEPTED);
     }
 
     @PutMapping

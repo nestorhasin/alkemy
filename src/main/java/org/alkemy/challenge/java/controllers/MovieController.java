@@ -3,6 +3,7 @@ package org.alkemy.challenge.java.controllers;
 import javax.validation.Valid;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
+import org.alkemy.challenge.java.DTOs.GenderDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.services.interfaces.IMovieService;
 import org.springframework.http.HttpStatus;
@@ -53,13 +54,23 @@ public class MovieController {
     }
 
     @PostMapping("/{idMovie}/character/{idCharacter}")
-    public ResponseEntity<?> linkWithMovie(@PathVariable Long idMovie, @PathVariable Long idCharacter) {
+    public ResponseEntity<?> linkWithCharacter(@PathVariable Long idMovie, @PathVariable Long idCharacter) {
         return new ResponseEntity<>(iMovieService.linkWithCharacter(idMovie, idCharacter), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<?> addMovie(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO) {
+    @PostMapping("/{id}/addCharacter")
+    public ResponseEntity<?> addCharacter(@PathVariable Long id, @Valid @RequestBody CharacterDTO characterDTO) {
         return new ResponseEntity<>(iMovieService.addCharacter(id, characterDTO), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/{idMovie}/gender/{idGender}")
+    public ResponseEntity<?> linkWithGender(@PathVariable Long idMovie, @PathVariable Long idGender) {
+        return new ResponseEntity<>(iMovieService.linkWithGender(idMovie, idGender), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("/{id}/addGender")
+    public ResponseEntity<?> addGender(@PathVariable Long id, @Valid @RequestBody GenderDTO genderDTO) {
+        return new ResponseEntity<>(iMovieService.addGender(id, genderDTO), HttpStatus.ACCEPTED);
     }
 
     @PutMapping
