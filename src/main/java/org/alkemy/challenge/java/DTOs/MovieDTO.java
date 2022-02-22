@@ -47,8 +47,4 @@ public class MovieDTO implements Serializable{
     @JsonIgnore
     private GenderDTO genderDTO;
 
-    public Boolean addCharacter(CharacterDTO characterDTO){
-        return this.characterDTOs.add(characterDTO);
-    }
-
 }

@@ -43,16 +43,7 @@ public class Gender implements Serializable{
     @JsonManagedReference
     private List<Movie> movies = new ArrayList<>();
 
-    // COMUNICACIÓN ACTIVA
-    public void setMovies(List<Movie> movies){
-        this.movies = movies;
-        /*
-        for(Movies movie: movies){
-            movie.setGender(this);
-        }
-        */
-    }
-
+    // ACTIVE COMMUNICATION
     public void addMovie(Movie movie){
         if(!this.movies.contains(movie)){
             this.movies.add(movie);
@@ -60,6 +51,7 @@ public class Gender implements Serializable{
         }
     }
 
+    // ACTIVE COMMUNICATION
     public void removeMovie(Movie movie){
         if(this.movies.contains(movie)){
             this.movies.remove(movie);

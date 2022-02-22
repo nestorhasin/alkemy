@@ -104,18 +104,13 @@ public class CharacterServiceImpl implements ICharacterService {
     public CharacterDetailsResponse linkWithMovie(Long idCharacter, Long idMovie) {
         Character character = iCharacterRepository.findById(idCharacter).orElseThrow(() -> new ResourceNotFoundException("Character", "id", idCharacter));
         Movie movie = iMovieRepository.findById(idMovie).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", idMovie));
-        CharacterDTO characterDTO = modelMapper.map(character, CharacterDTO.class);
-        MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
-        Character characterTemporary = null;
-        Movie movieTemporary = null;
-        if(characterDTO.addMovie(movieDTO)){
-            characterTemporary = iCharacterRepository.save(modelMapper.map(characterDTO, Character.class));
-            movieTemporary = iMovieRepository.save(modelMapper.map(movieDTO, Movie.class));
-        }
-            // CREATE EXCEPTION
-        CharacterDTO characterFinal = modelMapper.map(characterTemporary, CharacterDTO.class);
-        characterFinal.addMovie(modelMapper.map(movieTemporary, MovieDTO.class));
-        return modelMapper.map(characterFinal, CharacterDetailsResponse.class);
+        character.addMovie(movie);
+        Character characterFinal = iCharacterRepository.save(character);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        List<MovieDTO> movieDTOs = characterFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
+        CharacterDetailsResponse characterDetailsResponse = modelMapper.map(characterFinal, CharacterDetailsResponse.class);
+        characterDetailsResponse.setMovieDTOs(movieDTOs);
+        return characterDetailsResponse;
     }
 
     @Override

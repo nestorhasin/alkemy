@@ -10,6 +10,6 @@ public class JavaApplication {
 	public static void main(String[] args) {
 		DatabaseJDBC.createDatabase();
 		SpringApplication.run(JavaApplication.class, args);
-	}
+	}	
 
 }

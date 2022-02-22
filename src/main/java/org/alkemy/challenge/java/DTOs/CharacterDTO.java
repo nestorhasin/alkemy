@@ -46,8 +46,4 @@ public class CharacterDTO implements Serializable {
     @JsonIgnore
     private List<MovieDTO> movieDTOs = new ArrayList<>();
 
-    public Boolean addMovie(MovieDTO movieDTO){
-        return this.movieDTOs.add(movieDTO);
-    }
-
 }

@@ -27,6 +27,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "movies")
@@ -66,5 +67,37 @@ public class Movie implements Serializable {
     @JoinColumn(name = "gender_id")
     @JsonBackReference
     private Gender gender;
+
+    // [GENDER] ACTIVE COMMUNICATION
+    public void addGender(Gender gender){
+        if(this.gender == null){
+            setGender(gender);
+            gender.addMovie(this);
+        }
+    }
+
+    // [CHARACTER] ACTIVE COMMUNICATION
+    public void addCharacter(Character character){
+        if(!this.characters.contains(character)){
+            this.characters.add(character);
+            character.addMovie(this);
+        }
+    }
+
+    // [GENDER] ACTIVE COMMUNICATION
+    public void removeGender(Gender gender){
+        if(this.gender.equals(gender)){
+            this.gender = null;
+            gender.removeMovie(this);
+        }
+    }
+
+    // [CHARACTER] ACTIVE COMMUNICATION
+    public void removeCharacter(Character character){
+        if(this.characters.contains(character)){
+            this.characters.remove(character);
+            character.removeMovie(this);
+        }
+    }
 
 }

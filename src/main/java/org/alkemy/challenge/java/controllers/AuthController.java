@@ -10,7 +10,8 @@ import org.alkemy.challenge.java.repositories.IRoleRepository;
 import org.alkemy.challenge.java.repositories.IUserRepository;
 import org.alkemy.challenge.java.securities.JWTAuthResponseDTO;
 import org.alkemy.challenge.java.securities.JwtTokenProvider;
-import org.alkemy.challenge.java.services.SendGridService;
+import org.alkemy.challenge.java.services.EmailServiceImpl;
+import org.alkemy.challenge.java.services.interfaces.IEmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,13 +39,13 @@ public class AuthController {
     private IRoleRepository iRoleRepository;
 
     @Autowired
+    private IEmailService iEmailService;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
-        @Autowired
-        private SendGridService sendGridService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDTO loginDTO){
@@ -71,7 +72,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
         Role role = iRoleRepository.findByName("ROLE_ADMIN").get();
         user.setRoles(Collections.singleton(role));
-        iUserRepository.save(user);
+        User userRegister = iUserRepository.save(user);
+        iEmailService.sendEmail(userRegister);
+        //return new ResponseEntity<>(userRegister, HttpStatus.OK);
         return new ResponseEntity<>("[SUCCESS] Registration successfull", HttpStatus.OK);
     }
 

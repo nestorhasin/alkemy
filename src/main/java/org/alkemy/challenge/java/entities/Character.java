@@ -24,6 +24,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "characters")
@@ -53,5 +54,21 @@ public class Character implements Serializable{
     @ManyToMany(mappedBy = "characters", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Movie> movies = new ArrayList<>();
+
+    // ACTIVE COMMUNICATION
+    public void addMovie(Movie movie){
+        if(!this.movies.contains(movie)){
+            this.movies.add(movie);
+            movie.addCharacter(this);
+        }
+    }
+
+    // ACTIVE COMMUNICATION
+    public void removeMovie(Movie movie){
+        if(this.movies.contains(movie)){
+            this.movies.remove(movie);
+            movie.removeCharacter(this);
+        }
+    }
 
 }
