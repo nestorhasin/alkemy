@@ -75,7 +75,7 @@ public class MovieController {
 
     @PutMapping
     public ResponseEntity<?> updateMovie(@Valid @RequestBody MovieDTO movieDTO) {
-        return new ResponseEntity<>(iMovieService.update(movieDTO), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(iMovieService.update(movieDTO), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

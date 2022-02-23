@@ -28,6 +28,8 @@ public class GenderDTO implements Serializable{
     @NotBlank
     @Size(min = 5, message = "[ERROR] Insert a value of at least 5 characters")
     private String image;
+
+    //private byte[] image;
     
     // LAS DOS VAN JUNTAS...
     //@JsonProperty(access= JsonProperty.Access.READ_ONLY)

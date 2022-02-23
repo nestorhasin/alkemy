@@ -44,6 +44,9 @@ public class Movie implements Serializable {
     
     @NotBlank
     private String image;
+
+    //@Lob
+    //private byte[] image;
     
     @NotBlank
     private String title;

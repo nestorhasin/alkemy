@@ -105,7 +105,7 @@ public class CharacterController {
 
     @PutMapping
     public ResponseEntity<?> updateCharacter(@Valid @RequestBody CharacterDTO characterDTO) {
-        return new ResponseEntity<>(iCharacterService.update(characterDTO), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(iCharacterService.update(characterDTO), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

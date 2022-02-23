@@ -51,7 +51,7 @@ public class GenderController {
 
     @PutMapping
     public ResponseEntity<?> updateGender(@Valid @RequestBody GenderDTO genderDTO) {
-        return new ResponseEntity<>(iGenderService.update(genderDTO), HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(iGenderService.update(genderDTO), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

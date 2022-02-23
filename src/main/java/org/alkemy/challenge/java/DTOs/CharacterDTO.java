@@ -26,6 +26,8 @@ public class CharacterDTO implements Serializable {
     @NotBlank
     @Size(min = 5, message = "[ERROR] Insert a value of at least 5 characters")
     private String image;
+
+    //private byte[] image;
     
     @NotBlank
     @Size(min = 3, message = "[ERROR] Insert a value of at least 3 characters")

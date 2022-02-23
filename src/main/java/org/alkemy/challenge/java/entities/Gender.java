@@ -39,6 +39,9 @@ public class Gender implements Serializable{
     @NotBlank
     private String image;
 
+    //@Lob
+    //private byte[] image;
+
     @OneToMany(mappedBy = "gender", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Movie> movies = new ArrayList<>();

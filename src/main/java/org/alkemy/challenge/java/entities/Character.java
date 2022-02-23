@@ -38,6 +38,9 @@ public class Character implements Serializable{
 
     private String image;
     
+    //@Lob
+    //private byte[] image;
+
     private String name;
     
     private Integer age;
