@@ -1,25 +1,41 @@
 package org.alkemy.challenge.java.controllersTest;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
+import org.alkemy.challenge.java.DTOs.response.CharacterResponse;
 import org.alkemy.challenge.java.controllers.CharacterController;
+import org.alkemy.challenge.java.securities.CustomUserDetailsService;
 import org.alkemy.challenge.java.services.interfaces.ICharacterService;
+import org.alkemy.challenge.java.utils.DTOsUtil;
+import org.alkemy.challenge.java.utils.ResponseUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(CharacterController.class)
+//@WebMvcTest(CharacterController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class CharacterControllerTest {
 
     @Autowired
@@ -28,67 +44,88 @@ public class CharacterControllerTest {
     @MockBean
     private ICharacterService iCharacterService;
 
-    ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp(){
-        objectMapper = new ObjectMapper();
-    }
-
-    /*
     @Test
-    public void getCharactersTest() throws Exception{
-        List<CharacterDTO> characterDTOs = Arrays.asList(CharacterUtil.create().orElseThrow(Exception::new));
-        when(iCharacterService.read()).thenReturn(characterDTOs);
-        mockMvc.perform(get("/characters").contentType(MediaType.APPLICATION_JSON))
-               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$[0].image").value("https://ar.linkedin.com/in/nestorhasin"))
-               .andExpect(jsonPath("$[0].name").value("Nestor Hasin"))
-               .andExpect(jsonPath("$[0].age").value("34"))
-               .andExpect(jsonPath("$[0].weight").value("100.00"))
-               .andExpect(jsonPath("$[0].history").value("Desde que comenzó la pandemia por el COVID-19 me puse como meta ser programador y cambiar el paradigma de mi vida. Actualmente soy un apasionado del código y estoy seguro que la crisis nos da la oportunidad de reafirmar los caminos elegidos o, como en mi caso, tomar nuevos rumbos... HELLO PEOPLE!"))
-               .andExpect(jsonPath("$", hasSize(1)))
-               .andExpect(content().json(objectMapper.writeValueAsString(characterDTOs)))
-               .andExpect(status().isOk());
+    public void getCharactersTest() throws Exception {
+        // Given
+        when(iCharacterService.read()).thenReturn(Arrays.asList(ResponseUtil.CHARACTER_RESPONSE_ONE, ResponseUtil.CHARACTER_RESPONSE_TWO, ResponseUtil.CHARACTER_RESPONSE_THREE));
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("nameTwo"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("nameThree"));
         verify(iCharacterService).read();
     }
 
     @Test
-    public void getCharacterByIdTest() throws Exception{
-        when(iCharacterService.readById(1L)).thenReturn(CharacterUtil.create().orElseThrow(() -> new ResourceNotFoundException("Character", "id", 1L)));
-        mockMvc.perform(get("/characters/1").contentType(MediaType.APPLICATION_JSON))
-               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$.image").value("https://ar.linkedin.com/in/nestorhasin"))
-               .andExpect(jsonPath("$.name").value("Nestor Hasin"))
-               .andExpect(jsonPath("$.age").value("34"))
-               .andExpect(jsonPath("$.weight").value("100.00"))
-               .andExpect(jsonPath("$.history").value("Desde que comenzó la pandemia por el COVID-19 me puse como meta ser programador y cambiar el paradigma de mi vida. Actualmente soy un apasionado del código y estoy seguro que la crisis nos da la oportunidad de reafirmar los caminos elegidos o, como en mi caso, tomar nuevos rumbos... HELLO PEOPLE!"))
-               .andExpect(status().isOk());
-        verify(iCharacterService).readById(1L);
+    public void getCharactersByNameTest() throws Exception {
+        // Given
+        when(iCharacterService.readAllByName("nameTwo")).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_TWO));
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters?name=nameTwo").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameTwo"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageTwo"));
+        verify(iCharacterService).readAllByName("nameTwo");
     }
-    */
 
     @Test
-    public void createCharacterTest() throws Exception{
-        CharacterDTO characterDto = new CharacterDTO();
-            characterDto.setId(1L);
-            characterDto.setImage("https://ar.linkedin.com/in/nestorhasin");
-            characterDto.setName("Nestor Hasin");
-            characterDto.setAge(34);
-            characterDto.setWeight(100.00);
-            characterDto.setHistory("Desde que comenzó la pandemia por el COVID-19 me puse como meta ser programador y cambiar el paradigma de mi vida. Actualmente soy un apasionado del código y estoy seguro que la crisis nos da la oportunidad de reafirmar los caminos elegidos o, como en mi caso, tomar nuevos rumbos... HELLO PEOPLE!");
-        System.out.println(objectMapper.writeValueAsString(characterDto));
-        mockMvc.perform(post("/characters").contentType(MediaType.APPLICATION_JSON)
-               .content(objectMapper.writeValueAsString(characterDto)))
-               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-               .andExpect(jsonPath("$.image").value("https://ar.linkedin.com/in/nestorhasin"))
-               .andExpect(jsonPath("$.name").value("Nestor Hasin"))
-               .andExpect(jsonPath("$.age").value("34"))
-               .andExpect(jsonPath("$.weight").value("100.00"))
-               .andExpect(jsonPath("$.history").value("Desde que comenzó la pandemia por el COVID-19 me puse como meta ser programador y cambiar el paradigma de mi vida. Actualmente soy un apasionado del código y estoy seguro que la crisis nos da la oportunidad de reafirmar los caminos elegidos o, como en mi caso, tomar nuevos rumbos... HELLO PEOPLE!"))
-               .andExpect(content().json(objectMapper.writeValueAsString(characterDto)))
-               .andExpect(status().isCreated());
-        verify(iCharacterService).create(characterDto);
+    public void getCharactersByAgeTest() throws Exception {
+        // Given
+        when(iCharacterService.readAllByAge(3)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters?age=3").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
+        verify(iCharacterService).readAllByAge(3);
+    }
+
+    @Test
+    public void getCharactersByMovieTest() throws Exception {
+        // Given
+        when(iCharacterService.readAllByMovie(1L)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters?movie=1").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
+        verify(iCharacterService).readAllByMovie(1L);
+    }
+
+    @Test
+    public void getCharactersByWeightTest() throws Exception {
+        // Given
+        when(iCharacterService.readAllByWeight(1.0)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_ONE));
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters?weight=1.0").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageOne"));
+        verify(iCharacterService).readAllByWeight(1.0);
+    }
+
+    @Test
+    public void getCharacterByIdTest() throws Exception{
+        // Given
+        when(iCharacterService.readById(1L)).thenReturn(ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE);
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.get("/characters/1").contentType(MediaType.APPLICATION_JSON))
+        // Then
+            .andExpect(MockMvcResultMatchers.status().isOk())
+            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
+        verify(iCharacterService).readById(1L);
     }
 
 }
