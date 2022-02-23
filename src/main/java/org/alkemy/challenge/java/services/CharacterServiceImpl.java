@@ -48,8 +48,13 @@ public class CharacterServiceImpl implements ICharacterService {
     @Transactional(readOnly = true)
     public CharacterDetailsResponse readById(Long id) {
         Character character = iCharacterRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Character", "id", id));
-        CharacterDTO characterDTO = modelMapper.map(character, CharacterDTO.class);
-        return modelMapper.map(characterDTO, CharacterDetailsResponse.class);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        CharacterDetailsResponse characterDetailsResponse = modelMapper.map(character, CharacterDetailsResponse.class);
+        if(!character.getMovies().isEmpty()){
+            List<MovieDTO> movieDTOs = character.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
+            characterDetailsResponse.setMovieDTOs(movieDTOs);
+        }
+        return characterDetailsResponse;
     }
 
     @Override
@@ -108,8 +113,8 @@ public class CharacterServiceImpl implements ICharacterService {
         character.addMovie(movie);
         Character characterFinal = iCharacterRepository.save(character);
         // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
-        List<MovieDTO> movieDTOs = characterFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
         CharacterDetailsResponse characterDetailsResponse = modelMapper.map(characterFinal, CharacterDetailsResponse.class);
+        List<MovieDTO> movieDTOs = characterFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
         characterDetailsResponse.setMovieDTOs(movieDTOs);
         return characterDetailsResponse;
     }

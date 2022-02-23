@@ -15,6 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/images")
 public class FileController {
 
+    /*
+    Para acceder a los métodos de este Controller por Postman tenemos que enviar la imagen vía 'form-data'
+    */
+
     @Autowired
     private IFileService iFileService;
 

@@ -9,7 +9,7 @@ import org.alkemy.challenge.java.DTOs.response.GenderDetailsResponse;
 public interface IGenderService {
     GenderDTO create(GenderDTO genderDTO);
     List<GenderDTO> read();
-    GenderDTO readById(Long id);
+    GenderDetailsResponse readById(Long id);
     GenderDTO update(GenderDTO genderDTO);
     void delete(Long id);
     GenderDetailsResponse linkWithMovie(Long idGender, Long idMovie);

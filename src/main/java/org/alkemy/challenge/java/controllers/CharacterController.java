@@ -29,7 +29,7 @@ public class CharacterController {
     public ResponseEntity<?> getCharacters(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "age", required = false) Integer age,
-            @RequestParam(value = "movie", required = false) Long id,
+            @RequestParam(value = "movie", required = false) Long movie,
             @RequestParam(value = "weight", required = false) Double weight) {
         if (name != null) {
             return new ResponseEntity<>(iCharacterService.readAllByName(name), HttpStatus.OK);
@@ -37,8 +37,8 @@ public class CharacterController {
         if (age != null) {
             return new ResponseEntity<>(iCharacterService.readAllByAge(age), HttpStatus.OK);
         }
-        if (id != null) {
-            return new ResponseEntity<>(iCharacterService.readAllByMovie(id), HttpStatus.OK);
+        if (movie != null) {
+            return new ResponseEntity<>(iCharacterService.readAllByMovie(movie), HttpStatus.OK);
         }
         if (weight != null) {
             return new ResponseEntity<>(iCharacterService.readAllByWeight(weight), HttpStatus.OK);
@@ -47,11 +47,11 @@ public class CharacterController {
     }
 
     /*
-     * @GetMapping
-     * public ResponseEntity<?> getCharacters(){
-     * return new ResponseEntity<>(iCharacterService.read(), HttpStatus.OK);
-     * }
-     */
+    @GetMapping
+    public ResponseEntity<?> getCharacters(){
+        return new ResponseEntity<>(iCharacterService.read(), HttpStatus.OK);
+    }
+    */
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getCharacterById(@PathVariable Long id) {
@@ -59,34 +59,26 @@ public class CharacterController {
     }
 
     /*
-     * @GetMapping
-     * public ResponseEntity<?> getCharacterByName(@RequestParam(value = "name",
-     * required = false) String name){
-     * return new ResponseEntity<>(iCharacterService.readAllByName(name),
-     * HttpStatus.OK);
-     * }
-     * 
-     * @GetMapping
-     * public ResponseEntity<?> getCharacterByAge(@RequestParam(value = "age",
-     * required = false) Integer age){
-     * return new ResponseEntity<>(iCharacterService.readAllByAge(age),
-     * HttpStatus.OK);
-     * }
-     * 
-     * @GetMapping
-     * public ResponseEntity<?> getCharacterByMovie(@RequestParam(value = "movie",
-     * required = false) Long id){
-     * return new ResponseEntity<>(iCharacterService.readAllByMovie(id),
-     * HttpStatus.OK);
-     * }
-     * 
-     * @GetMapping
-     * public ResponseEntity<?> getCharacterByWeight(@RequestParam(value = "weight",
-     * required = false) Double weight){
-     * return new ResponseEntity<>(iCharacterService.readAllByWeight(weight),
-     * HttpStatus.OK);
-     * }
-     */
+    @GetMapping
+    public ResponseEntity<?> getCharacterByName(@RequestParam(value = "name", required = false) String name){
+        return new ResponseEntity<>(iCharacterService.readAllByName(name), HttpStatus.OK);
+    }
+    
+    @GetMapping
+    public ResponseEntity<?> getCharacterByAge(@RequestParam(value = "age", required = false) Integer age){
+        return new ResponseEntity<>(iCharacterService.readAllByAge(age), HttpStatus.OK);
+    }
+    
+    @GetMapping
+    public ResponseEntity<?> getCharacterByMovie(@RequestParam(value = "movie", required = false) Long id){
+        return new ResponseEntity<>(iCharacterService.readAllByMovie(id), HttpStatus.OK);
+    }
+    
+    @GetMapping
+    public ResponseEntity<?> getCharacterByWeight(@RequestParam(value = "weight", required = false) Double weight){
+        return new ResponseEntity<>(iCharacterService.readAllByWeight(weight), HttpStatus.OK);
+    }
+    */
 
     @PostMapping
     public ResponseEntity<?> createCharacter(@Valid @RequestBody CharacterDTO characterDTO) {

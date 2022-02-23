@@ -45,9 +45,16 @@ public class GenderServiceImpl implements IGenderService {
 
     @Override
     @Transactional(readOnly = true)
-    public GenderDTO readById(Long id){
+    public GenderDetailsResponse readById(Long id){
         Gender gender = iGenderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Gender", "id", id));
-        return modelMapper.map(gender, GenderDTO.class);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        GenderDetailsResponse genderDetailsResponse = modelMapper.map(gender, GenderDetailsResponse.class);
+        if(!gender.getMovies().isEmpty()){
+            List<MovieDTO> movieDTOs = gender.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
+            genderDetailsResponse.setMovieDTOs(movieDTOs);
+        
+        }
+        return genderDetailsResponse;
     }
 
     @Override
@@ -73,9 +80,11 @@ public class GenderServiceImpl implements IGenderService {
         gender.addMovie(movie);
         Gender genderFinal = iGenderRepository.save(gender);
         // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
-        List<MovieDTO> movieDTOs = genderFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
         GenderDetailsResponse genderDetailsResponse = modelMapper.map(genderFinal, GenderDetailsResponse.class);
-        genderDetailsResponse.setMovieDTOs(movieDTOs);
+        if(!genderFinal.getMovies().isEmpty()){
+            List<MovieDTO> movieDTOs = genderFinal.getMovies().stream().map(entity -> modelMapper.map(entity, MovieDTO.class)).collect(Collectors.toList());
+            genderDetailsResponse.setMovieDTOs(movieDTOs);
+        }
         return genderDetailsResponse;
     }
 

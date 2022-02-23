@@ -37,6 +37,8 @@ public class MovieServiceImpl implements IMovieService {
     @Autowired
     private ModelMapper modelMapper;
 
+    private static final String ORDER_BY = "creationDate";
+
     @Override
     @Transactional
     public MovieDTO create(MovieDTO movieDTO) {
@@ -53,7 +55,7 @@ public class MovieServiceImpl implements IMovieService {
     @Override
     @Transactional(readOnly = true)
     public List<MovieDTO> readByOrder(String order){
-        String sortBy = "creationDate";
+        String sortBy = ORDER_BY;
         Sort sort = order.equalsIgnoreCase(Sort.Direction.ASC.name())? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         List<Movie> movies = iMovieRepository.findAll(sort);
         return movies.stream().map(movie -> modelMapper.map(movie, MovieDTO.class)).collect(Collectors.toList());
@@ -63,8 +65,17 @@ public class MovieServiceImpl implements IMovieService {
     @Transactional(readOnly = true)
     public MovieDetailsResponse readById(Long id){
         Movie movie = iMovieRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Movie", "id", id));
-        MovieDTO movieDTO = modelMapper.map(movie, MovieDTO.class);
-        return modelMapper.map(movieDTO, MovieDetailsResponse.class);
+        // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
+        MovieDetailsResponse movieDetailsResponse = modelMapper.map(movie, MovieDetailsResponse.class);
+        if(!movie.getCharacters().isEmpty()){
+            List<CharacterDTO> characterDTOs = movie.getCharacters().stream().map(entity -> modelMapper.map(entity, CharacterDTO.class)).collect(Collectors.toList());
+            movieDetailsResponse.setCharacterDTOs(characterDTOs);
+        }
+        if(movie.getGender() != null){
+            GenderDTO genderDTO = modelMapper.map(movie.getGender(), GenderDTO.class);
+            movieDetailsResponse.setGenderDTO(genderDTO);
+        }
+        return movieDetailsResponse;
     }
 
     @Override
@@ -108,9 +119,13 @@ public class MovieServiceImpl implements IMovieService {
         movie.addCharacter(character);
         Movie movieFinal = iMovieRepository.save(movie);
         // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
-        List<CharacterDTO> characterDTOs = movieFinal.getCharacters().stream().map(entity -> modelMapper.map(entity, CharacterDTO.class)).collect(Collectors.toList());
         MovieDetailsResponse movieDetailsResponse = modelMapper.map(movieFinal, MovieDetailsResponse.class);
+        List<CharacterDTO> characterDTOs = movieFinal.getCharacters().stream().map(entity -> modelMapper.map(entity, CharacterDTO.class)).collect(Collectors.toList());
         movieDetailsResponse.setCharacterDTOs(characterDTOs);
+        if(movie.getGender() != null){
+            GenderDTO genderDTO = modelMapper.map(movie.getGender(), GenderDTO.class);
+            movieDetailsResponse.setGenderDTO(genderDTO);
+        }
         return movieDetailsResponse;
     }
 
@@ -129,9 +144,13 @@ public class MovieServiceImpl implements IMovieService {
         movie.addGender(gender);
         Movie movieFinal = iMovieRepository.save(movie);
         // ESTE TRATAMIENTO HAY QUE HACERLO DEBIDO A UN BUG DE MODEL MAPPER QUE NO MAPEA LAS COMPOSICIONES
-        GenderDTO genderDTO = modelMapper.map(movieFinal.getGender(), GenderDTO.class);
         MovieDetailsResponse movieDetailsResponse = modelMapper.map(movieFinal, MovieDetailsResponse.class);
-        movieDetailsResponse.setGenderDTO(genderDTO);;
+        GenderDTO genderDTO = modelMapper.map(movieFinal.getGender(), GenderDTO.class);
+        movieDetailsResponse.setGenderDTO(genderDTO);
+        if(!movieFinal.getCharacters().isEmpty()){
+            List<CharacterDTO> characterDTOs = movieFinal.getCharacters().stream().map(entity -> modelMapper.map(entity, CharacterDTO.class)).collect(Collectors.toList());
+            movieDetailsResponse.setCharacterDTOs(characterDTOs);
+        }
         return movieDetailsResponse;
     }
 

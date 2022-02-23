@@ -28,11 +28,11 @@ public class MovieController {
 
     @GetMapping
     public ResponseEntity<?> getMovies(
-            @RequestParam(value = "name", required = false) String title,
+            @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "gender", required = false) Long gender,
             @RequestParam(value = "order", required = false) String order) {
-        if (title != null) {
-            return new ResponseEntity<>(iMovieService.readAllByTitle(title), HttpStatus.OK);
+        if (name != null) {
+            return new ResponseEntity<>(iMovieService.readAllByTitle(name), HttpStatus.OK);
         }
         if (gender != null) {
             return new ResponseEntity<>(iMovieService.readAllByGender(gender), HttpStatus.OK);
