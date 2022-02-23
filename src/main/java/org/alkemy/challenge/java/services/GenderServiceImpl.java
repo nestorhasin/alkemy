@@ -29,6 +29,12 @@ public class GenderServiceImpl implements IGenderService {
     @Autowired
     private ModelMapper modelMapper;
 
+    // CHEQUEAR SI UTILIZANDO ANNOTATION DE SPRING, MOCKITO NECESITA ESTO...
+    public GenderServiceImpl(IGenderRepository iGenderRepository, IMovieRepository iMovieRepository){
+        this.iGenderRepository = iGenderRepository;
+        this.iMovieRepository = iMovieRepository;
+    }
+
     @Override
     @Transactional
     public GenderDTO create(GenderDTO genderDTO) {
