@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -38,6 +39,7 @@ public class MovieDTO implements Serializable{
     private LocalDate creationDate;
     
     @Min(value = 1, message = "[ERROR] The minimun value is 1")
+    @Max(value = 5, message = "[ERROR] The maximum value is 5")
     private Integer qualification;
     
     // LAS DOS VAN JUNTAS...
