@@ -65,16 +65,16 @@ Ejemplo:
 	http://localhost:8080/characters/{id}
 
 ### GET (Read by name)
-    http://localhost:8080/characters?name={name}
+    	http://localhost:8080/characters?name={name}
 
 ### GET (Read by age)
-    http://localhost:8080/characters?age={age}
+    	http://localhost:8080/characters?age={age}
 
 ### GET (Read by weight)
-    http://localhost:8080/characters?weight={weight}
+    	http://localhost:8080/characters?weight={weight}
 
 ### GET (Read by movie)
-    http://localhost:8080/characters?movie={id}
+    	http://localhost:8080/characters?movie={id}
 
 ### POST (Create)
 	http://localhost:8080/characters
@@ -82,18 +82,18 @@ Ejemplo:
 Ejemplo:
 
     {
-    "image": "image",
-    "name": "name",
-    "age": 10,
-    "weight": 100.00,
-    "history": "history"    
+    	"image": "image",
+    	"name": "name",
+    	"age": 10,
+    	"weight": 100.00,
+    	"history": "history"    
     }
     
 ### POST (Link with movie)
-    http://localhost:8080/characters/{idCharacter}/movie/{idMovie}
+    	http://localhost:8080/characters/{idCharacter}/movie/{idMovie}
 
 ### POST (Add movie to character)
-    http://localhost:8080/characters/{id}
+    	http://localhost:8080/characters/{id}
     
 Ejemplo:
 
@@ -108,12 +108,12 @@ Ejemplo:
 	http://localhost:8080/characters
 
     {
-    "id": 8
-    "image": "image",
-    "name": "name",
-    "age": 10,
-    "weight": 100.00,
-    "history": "history"    
+    	"id": 8
+    	"image": "image",
+    	"name": "name",
+    	"age": 10,
+    	"weight": 100.00,
+    	"history": "history"    
     }
 
 ### DELETE (Delete by id)
@@ -122,19 +122,19 @@ Ejemplo:
 ### **MOVIE**
 
 ### GET (Read)
-    http://localhost:8080/movies
+    	http://localhost:8080/movies
 
 ### GET (Read by id)
-    http://localhost:8080/movies/{id}
+    	http://localhost:8080/movies/{id}
     
 ### GET (Read by name)
     	http://localhost:8080/movies?name={name}
 
 ### GET (Read by gender)
-    http://localhost:8080/movies?gender={gender}
+    	http://localhost:8080/movies?gender={gender}
 
 ### GET (Read in ascending or descending order according to creation date)
-    http://localhost:8080/movies?order={ASC|DESC}
+    	http://localhost:8080/movies?order={ASC|DESC}
 
 ### POST (Create)
 	http://localhost:8080/movies
@@ -142,16 +142,16 @@ Ejemplo:
 Ejemplo:
 
     {    
-    "image": "image",
-    "title": "title",    
-    "qualification": 5    
+    	"image": "image",
+    	"title": "title",    
+    	"qualification": 5    
     }
 
 ### POST (Link with character)
-    http://localhost:8080/movies/{idMovie}/character/{idCharacter}
+    	http://localhost:8080/movies/{idMovie}/character/{idCharacter}
 
 ### POST (Add character to movie)
-    http://localhost:8080/movies/{id}/addCharacter
+    	http://localhost:8080/movies/{id}/addCharacter
     
 Ejemplo:
 
@@ -164,10 +164,10 @@ Ejemplo:
     }
 
 ### POST (Link with gender)
-    http://localhost:8080/movies/{idMovie}/gender/{idGender}
+    	http://localhost:8080/movies/{idMovie}/gender/{idGender}
 
 ### POST (Add character to movie)
-    http://localhost:8080/movies/{id}/addGender
+    	http://localhost:8080/movies/{id}/addGender
     
 Ejemplo:
 
@@ -182,10 +182,10 @@ Ejemplo:
 Ejemplo:
 
     {
-    "id": 1,
-    "image": "image",
-    "title": "title",    
-    "qualification": 5    
+    	"id": 1,
+    	"image": "image",
+    	"title": "title",    
+    	"qualification": 5    
     }
 
 ### DELETE (Delete by id)
@@ -204,10 +204,10 @@ Ejemplo:
     }
     
 ### POST (Link with movie)
-    http://localhost:8080/genders/{idGender}/movie/{idMovie}
+    	http://localhost:8080/genders/{idGender}/movie/{idMovie}
 
 ### POST (Add movie to gender)
-    http://localhost:8080/genders/{id}
+    	http://localhost:8080/genders/{id}
     
 Ejemplo:
 
@@ -219,25 +219,25 @@ Ejemplo:
     }
         
 ### GET (Read)
-    http://localhost:8080/genders
+    	http://localhost:8080/genders
     
 ### GET (Read by id)
-    http://localhost:8080/genders/{id}
+    	http://localhost:8080/genders/{id}
 
 ### PUT (Update)
-    http://localhost:8080/genders
+    	http://localhost:8080/genders
 
 ### DELETE (Delete by id)
-    http://localhost:8080/genders/{id}
+    	http://localhost:8080/genders/{id}
 
 ## E-MAIL
 Para el envío de e-mail se utilizó el Servicio [SendGrid](https://app.sendgrid.com/ "SendGrid") mediante el cual, cuando un usuario se registra (http://localhost:8080/auth/register) se le envía un e-mail con un mensaje de bienvenida. El e-mail es enviado desde mi cuenta personal registrada en el sitio indicado mediante una API KEY que valida los envios. Dejo a continuación dos servicios a modo de test:
 
 ### GET (Send mail in plain text)
-    http://localhost:8080/email/plain/{email}
+    	http://localhost:8080/email/plain/{email}
     
 ### GET (Send mail in html text)
-    http://localhost:8080/email/html/{email}
+    	http://localhost:8080/email/html/{email}
 
 ## DOCUMENTATION
 Se documenta el proyecto mediante las siguiente herramientas:
