@@ -2,198 +2,253 @@
 
 ### Objetivo
 
-Desarrollar una API para explorar el mundo de Disney, la cual permitirá conocer y modificar los personajes que lo componen y entender en qué películas estos participaron. Por otro lado, deberá exponer la información para que cualquier frontend pueda consumirla. 
+Desarrollar una API para explorar el mundo de Disney, la cual permitirá conocer y modificar los personajes que lo componen y entender en qué películas participaron. Por otro lado, deberá exponer la información para que cualquier frontend pueda consumirla. 
 - 👉 Utilizar Spring Boot
 - 👉 No es necesario armar el Frontend
 - 👉 Las rutas deberán seguir el patrón REST
 - 👉 Utilizar la librería Spring Security
 
-### Requerimientos técnicos
-## 1. Modelado de Base de Datos
-**Personaje:**  deberá tener:
-- Imagen.
-- Nombre.
-- Edad.
-- Peso.
-- Historia.
-- Películas o series asociadas.
+## DATABASE
+### CHARACTER
+- image
+- name
+- age
+- weight
+- history
+- movies
 
- **Película o Serie:**  deberá tener:
-- Imagen.
-- Título.
-- Fecha de creación.
-- Calificación (del 1 al 5).
-- Personajes asociados.
+### MOVIE
+- image
+- title
+- creation_date
+- qualification (1-5)
+- characters
 
-**Género:** deberá tener:
-- Nombre.
-- Imagen.
-- Películas o series asociadas.
+### GENDER
+- name
+- image
+- movies
 
-## 2. Autenticación de Usuarios
-El usuario despues de registrarse y logearse, obteniene un token, el cual es necesario y requerido para acceder a los demás paths, una vez que pasa 10 minutos el token queda desactualizado o vencido, lo que obliga a que el usuario vuelva a generarlo mediante un nuevo login.
-Para desactivar el pedido de token y login en los paths es necesario comentar la linea 44 y 48 de la clase llamada SecurityConfig (.authenticated();) y sacar el comentario a la linea 46 del mismo (.permitAll();)
+## SECURITY
+El usuario solo podrá realizar peticiones GET sin necesidad de registrarse ni logearse. En caso de realizar otro tipo de petición se le pedirá registrarse y logearse, obteniendo un token, el cual le permitirá realizar otro tipo de peticiones.
 
-### POST (registro)
+### POST (register)
 	http://localhost:8080/auth/register
 
 Ejemplo:
 
     {        
-        "nombreCompleto": "andres Rodriguez",
-        "email": "andres_rod_000@hotmail.com",
-        "username": "andresRod",
-        "contrasenia": "123"
+        "name": "Nestor Hasin",
+        "username": "username",
+        "email": "nestorhasin@gmail.com",
+        "password": "password"
     }
 
 ### POST (login)
 	http://localhost:8080/auth/login
 
-Ejemplo login: (AGREGAR)
+Ejemplo:
+    
+    {        
+        "usernameOrEmail": "username",
+        "password": "password"
+    }
 
-Ejemplo de path usando el token generado por el login: (AGREGAR)
+## API REST
 
-## 3. Listado de Personajes
-Con el siguiente endpoint se muestra los personajes, pero solamente se filtra a traves de un DTO los datos de: imagen y nombre.
+### **CHARACTER**
 
-### GET
-	http://localhost:8080/characters/
+### GET (Read)
+	http://localhost:8080/characters
 
-## 4. Personajes (CRUD)
+### GET (Read by id)
+	http://localhost:8080/characters/{id}
 
-### POST
-	http://localhost:8080/characters/
+### GET (Read by name)
+    http://localhost:8080/characters?name={name}
+
+### GET (Read by age)
+    http://localhost:8080/characters?age={age}
+
+### GET (Read by weight)
+    http://localhost:8080/characters?weight={weight}
+
+### GET (Read by movie)
+    http://localhost:8080/characters?movie={id}
+
+### POST (Create)
+	http://localhost:8080/characters
 
 Ejemplo:
 
     {
-    "imagen": "urlImg",
-    "nombre": "roberto carlos",
-    "peso": 120.5,
-    "edad": 23,
-    "historia": "historia1"    
+    "image": "image",
+    "name": "name",
+    "age": 10,
+    "weight": 100.00,
+    "history": "history"    
+    }
+    
+### POST (Link with movie)
+    http://localhost:8080/characters/{idCharacter}/movie/{idMovie}
+
+### POST (Add movie to character)
+    http://localhost:8080/characters/{id}
+    
+Ejemplo:
+
+    {
+        "image": "image",
+        "title": "title",
+	"creationDate": "2022-02-02",
+	"qualification": 5
     }
 
-### PUT by ID
+### PUT (Update)
+	http://localhost:8080/characters
+
+    {
+    "id": 8
+    "image": "image",
+    "name": "name",
+    "age": 10,
+    "weight": 100.00,
+    "history": "history"    
+    }
+
+### DELETE (Delete by id)
 	http://localhost:8080/characters/{id}
 
-### DELETE by ID
-	http://localhost:8080/characters/{id}
+### **MOVIE**
 
-## 5. Personaje detalle
+### GET (Read)
+    http://localhost:8080/movies
 
-En el detalle se alistan todos los atributos del personaje, como así también sus películas relacionadas.
-
-### GET By ID (AGREGAR)
-	http://localhost:8080/characters/{id}
-
-## 6. Búsqueda de Personajes
-
-Busqueda por nombre:
-
-    http://localhost:8080/characters?name={name}
-
-Busqueda por Edad:
-
-    http://localhost:8080/characters?age={age}
-
-Busqueda por Peso:
-
-    http://localhost:8080/characters?weight={weight}
-
-Busqueda por Pelicula asociada:
-
-    http://localhost:8080/characters?movies={id}
-
-
-## 7. Listado de Películas
-
-Muestra solamente a traves de un Dto los campos imagen, título y fecha de creación.
-
-    http://localhost:8080/movies/
-
-## 8. Detalle de Película / Serie con sus personajes
-
-Devuelve todos los campos de la película o serie junto a los personajes asociados a la misma.
-(Debido a la relación many to many bidireccional con Personajes y para evitar Recursión infinita se utilizo la anotación @JsonIdentityInfo)
-
+### GET (Read by id)
     http://localhost:8080/movies/{id}
+    
+### GET (Read by name)
+    	http://localhost:8080/movies?name={name}
 
-## 9. Película / Serie CRUD
+### GET (Read by gender)
+    http://localhost:8080/movies?gender={gender}
 
-### POST
-	http://localhost:8080/movies/
+### GET (Read in ascending or descending order according to creation date)
+    http://localhost:8080/movies?order={ASC|DESC}
+
+### POST (Create)
+	http://localhost:8080/movies
 
 Ejemplo:
 
     {    
-    "imagen": "urlImg",
-    "titulo": "Spiderman",    
-    "calificacion": 5    
+    "image": "image",
+    "title": "title",    
+    "qualification": 5    
     }
 
-### PUT by ID
-	http://localhost:8080/movies/{id}
+### POST (Link with character)
+    http://localhost:8080/movies/{idMovie}/character/{idCharacter}
 
-### DELETE by ID
-	http://localhost:8080/movies/{id}
-
-## 10.Búsqueda de Películas o Series
-
-Busqueda por Titulo o nombre:
-
-    http://localhost:8080/movies?name={title}
-
-Filtro por Género:
+### POST (Add character to movie)
+    http://localhost:8080/movies/{id}/addCharacter
     
-    http://localhost:8080/movies?genre={genre}
+Ejemplo:
 
-Ordenar los resultados por fecha de creación de forma ascendiente o descendiente:
+    {
+        "image": "image",
+        "name": "name",
+        "age": 10,
+        "weight": 100.00,
+        "history": "history"
+    }
 
-    http://localhost:8080/movies?order={ASC | DESC}
+### POST (Link with gender)
+    http://localhost:8080/movies/{idMovie}/gender/{idGender}
 
-## 11. Envío de emails
+### POST (Add character to movie)
+    http://localhost:8080/movies/{id}/addGender
+    
+Ejemplo:
 
-Para el envío de mail se utilizó el Servicio [SendGrid](https://app.sendgrid.com/ "SendGrid").
-Mediante el cual, cuando un usuario se registra (http://localhost:8080/auth/register) se envía un email con un mensaje de Bienvenida al correo registrado. El mail es enviado desde mi cuenta personal registrada en el sitio indicado (SendGrid), mediante una API KEY que valida los enviós de mails.
+    {
+        "name": "name",
+	"image": "image"
+    }
 
-## 12 PATH ADICIONALES
+### PUT (Update)
+	http://localhost:8080/movies
+	
+Ejemplo:
 
-### A. GENEROS:
+    {
+    "id": 1,
+    "image": "image",
+    "title": "title",    
+    "qualification": 5    
+    }
 
-### POST (crear)
+### DELETE (Delete by id)
+	http://localhost:8080/movies/{id}    
+
+### **GENDER**
+
+### POST (Create)
 	http://localhost:8080/genders
 
 Ejemplo:
 
     {
-        "imagen": "url3",
-        "nombre": "comedia romantica"
+        "image": "image",
+        "name": "name"
     }
     
-### GET (Mostrar generos)
+### POST (Link with movie)
+    http://localhost:8080/genders/{idGender}/movie/{idMovie}
 
+### POST (Add movie to gender)
+    http://localhost:8080/genders/{id}
+    
+Ejemplo:
+
+    {
+        "image": "image",
+        "title": "title",
+	"creationDate": "2022-02-02",
+	"qualification": 5
+    }
+        
+### GET (Read)
+    http://localhost:8080/genders
+    
+### GET (Read by id)
+    http://localhost:8080/genders/{id}
+
+### PUT (Update)
     http://localhost:8080/genders
 
-### DELETE by ID
-
+### DELETE (Delete by id)
     http://localhost:8080/genders/{id}
 
-### PUT by ID
+## E-MAIL
+Para el envío de e-mail se utilizó el Servicio [SendGrid](https://app.sendgrid.com/ "SendGrid") mediante el cual, cuando un usuario se registra (http://localhost:8080/auth/register) se le envía un e-mail con un mensaje de bienvenida. El e-mail es enviado desde mi cuenta personal registrada en el sitio indicado mediante una API KEY que valida los envios. Dejo a continuación dos servicios a modo de test:
 
-    http://localhost:8080/genders/{id}
+### GET (Send mail in plain text)
+    http://localhost:8080/email/plain/{email}
+    
+### GET (Send mail in html text)
+    http://localhost:8080/email/html/{email}
 
+## DOCUMENTATION
+Se documenta el proyecto mediante las siguiente herramientas:
 
-### B. PELICULAS:
+### Postman
 
-### POST by ID (agregar personaje a pelicula)
+Check src/main/resources/postman_collection.json
 
-    http://localhost:8080/movies/{id}/characters/{id}
+### Swagger
 
-### POST by ID (agregar genero a pelicula)
+Check http://localhost:8080/open-api/swagger-ui-custom.html y http://localhost:8080/open-api/api-docs
 
-    http://localhost:8080/movies/{id}/genders/{id}
-
-## 13 DOCUMENTACION
-
-Fueron documentados los endpoints utilizando Swagger.
+## TESTS
+Se realizaron utilizando JUnit y Mockito bajo el contexto de Spring.
