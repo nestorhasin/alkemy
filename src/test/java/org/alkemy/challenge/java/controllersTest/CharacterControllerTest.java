@@ -1,9 +1,8 @@
 package org.alkemy.challenge.java.controllersTest;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
-import org.alkemy.challenge.java.DTOs.response.CharacterResponse;
-import org.alkemy.challenge.java.controllers.CharacterController;
-import org.alkemy.challenge.java.securities.CustomUserDetailsService;
+import org.alkemy.challenge.java.DTOs.MovieDTO;
+import org.alkemy.challenge.java.DTOs.response.CharacterDetailsResponse;
 import org.alkemy.challenge.java.services.interfaces.ICharacterService;
 import org.alkemy.challenge.java.utils.DTOsUtil;
 import org.alkemy.challenge.java.utils.ResponseUtil;
@@ -11,26 +10,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 //@WebMvcTest(CharacterController.class)
@@ -44,32 +36,41 @@ public class CharacterControllerTest {
     @MockBean
     private ICharacterService iCharacterService;
 
+    private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+    }
+
     @Test
     public void getCharactersTest() throws Exception {
         // Given
-        when(iCharacterService.read()).thenReturn(Arrays.asList(ResponseUtil.CHARACTER_RESPONSE_ONE, ResponseUtil.CHARACTER_RESPONSE_TWO, ResponseUtil.CHARACTER_RESPONSE_THREE));
+        when(iCharacterService.read()).thenReturn(Arrays.asList(ResponseUtil.CHARACTER_RESPONSE_ONE,
+                ResponseUtil.CHARACTER_RESPONSE_TWO, ResponseUtil.CHARACTER_RESPONSE_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("nameTwo"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("nameThree"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("nameTwo"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("nameThree"));
         verify(iCharacterService).read();
     }
 
     @Test
     public void getCharactersByNameTest() throws Exception {
         // Given
-        when(iCharacterService.readAllByName("nameTwo")).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_TWO));
+        when(iCharacterService.readAllByName("nameTwo"))
+                .thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_TWO));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?name=nameTwo").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameTwo"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageTwo"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameTwo"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageTwo"));
         verify(iCharacterService).readAllByName("nameTwo");
     }
 
@@ -79,11 +80,11 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByAge(3)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?age=3").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
         verify(iCharacterService).readAllByAge(3);
     }
 
@@ -93,11 +94,11 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByMovie(1L)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?movie=1").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageThree"));
         verify(iCharacterService).readAllByMovie(1L);
     }
 
@@ -107,25 +108,92 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByWeight(1.0)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_ONE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?weight=1.0").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
-            .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageOne"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageOne"));
         verify(iCharacterService).readAllByWeight(1.0);
     }
 
     @Test
-    public void getCharacterByIdTest() throws Exception{
+    public void getCharacterByIdTest() throws Exception {
         // Given
         when(iCharacterService.readById(1L)).thenReturn(ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE);
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters/1").contentType(MediaType.APPLICATION_JSON))
-        // Then
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
         verify(iCharacterService).readById(1L);
+    }
+
+    @Test
+    public void createCharacterTest() throws JsonProcessingException, Exception {
+        // Given
+        CharacterDTO characterDTO = DTOsUtil.CHARACTER_DTO_ONE;
+        when(iCharacterService.create(any())).thenReturn(characterDTO);
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.post("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(characterDTO)))
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.history").value("historyOne"));
+        verify(iCharacterService).create(characterDTO);
+    }
+
+    @Test
+    public void linkWithMovieTest() throws JsonProcessingException, Exception{
+        // Given
+        CharacterDetailsResponse characterDetailsResponse = ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE;
+                characterDetailsResponse.setMovieDTOs(Arrays.asList(DTOsUtil.MOVIE_DTO_ONE));
+        when(iCharacterService.linkWithMovie(anyLong(), anyLong())).thenReturn(characterDetailsResponse);
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.post("/characters/1/movie/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isAccepted())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.title").value("titleOne"));
+        verify(iCharacterService).linkWithMovie(anyLong(), anyLong());
+    }
+
+    @Test
+    public void addMovieTest() throws JsonProcessingException, Exception{
+        // Given
+        MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
+        CharacterDetailsResponse characterDetailsResponse = ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE;
+                characterDetailsResponse.setMovieDTOs(Arrays.asList(movieDTO));
+        when(iCharacterService.addMovie(anyLong(), movieDTO)).thenReturn(characterDetailsResponse);
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.post("/characters/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(movieDTO)))
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isAccepted())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.title").value("titleOne"));
+        verify(iCharacterService).addMovie(anyLong(), movieDTO);
+    }
+
+    @Test
+    public void updateCharacterTest() throws JsonProcessingException, Exception{
+        // Given
+        CharacterDTO characterDTO = DTOsUtil.CHARACTER_DTO_ONE;
+        when(iCharacterService.update(characterDTO)).thenReturn(characterDTO);
+        // When
+        mockMvc.perform(MockMvcRequestBuilders.put("/characters")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(characterDTO)))
+                // Then
+                .andExpect(MockMvcResultMatchers.status().isAccepted())
+                .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"));
+        verify(iCharacterService).update(characterDTO);
     }
 
 }

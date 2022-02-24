@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileController {
 
     /*
-    Para acceder a los métodos de este Controller por Postman tenemos que enviar la imagen vía 'form-data'
+    Para acceder a los métodos de este Controller por Postman tenemos que enviar la imagen vía
+    'form-data' y de esta forma se actualiza el campo 'image' en la database y se suma el archivo
+    en resources/static/image...
     */
 
     @Autowired
