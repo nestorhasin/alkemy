@@ -56,7 +56,7 @@ Ejemplo:
 
 ## API REST
 
-### **CHARACTER**
+### **CHARACTER** 🚀
 
 ### GET (Read)
 	http://localhost:8080/characters
@@ -119,7 +119,7 @@ Ejemplo:
 ### DELETE (Delete by id)
 	http://localhost:8080/characters/{id}
 
-### **MOVIE**
+### **MOVIE** 🚀
 
 ### GET (Read)
 	http://localhost:8080/movies
@@ -191,7 +191,7 @@ Ejemplo:
 ### DELETE (Delete by id)
 	http://localhost:8080/movies/{id}    
 
-### **GENDER**
+### **GENDER** 🚀
 
 ### POST (Create)
 	http://localhost:8080/genders
@@ -229,6 +229,18 @@ Ejemplo:
 
 ### DELETE (Delete by id)
 	http://localhost:8080/genders/{id}
+	
+### **FILE** 🚀
+Este servicio tiene la finalidad de actualizar las entidades otorgándoles una imagen a cada una y almacenando una copia en el proyecto. Si utilizamos Postman, tengamos en cuenta que tenemos que enviar las imágenes vía 'form-data'.
+
+### POST (Insert image in entities and package src/main/resources/static/images/movies)
+	http://localhost:8080/images/movie/{id}
+
+### POST (Insert image in entities and package src/main/resources/static/images/characters)
+	http://localhost:8080/images/character/{id}
+
+### POST (Insert image in entities and package src/main/resources/static/images/genders)
+	http://localhost:8080/images/gender/{id}
 
 ## E-MAIL
 Para el envío de e-mail se utilizó el Servicio [SendGrid](https://app.sendgrid.com/ "SendGrid") mediante el cual, cuando un usuario se registra (http://localhost:8080/auth/register) se le envía un e-mail con un mensaje de bienvenida. El e-mail es enviado desde mi cuenta personal registrada en el sitio indicado mediante una API KEY que valida los envios. Dejo a continuación dos servicios a modo de test:
