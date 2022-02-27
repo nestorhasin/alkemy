@@ -3,16 +3,20 @@ package org.alkemy.challenge.java.controllersTest;
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.DTOs.response.CharacterDetailsResponse;
+import org.alkemy.challenge.java.annotations.ControllerTest;
 import org.alkemy.challenge.java.services.interfaces.ICharacterService;
 import org.alkemy.challenge.java.utils.DTOsUtil;
 import org.alkemy.challenge.java.utils.ResponseUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -24,10 +28,11 @@ import java.util.Collections;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 //@WebMvcTest(CharacterController.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+//@ExtendWith(SpringExtension.class)
+@ControllerTest
 public class CharacterControllerTest {
 
     @Autowired
@@ -41,6 +46,7 @@ public class CharacterControllerTest {
     @BeforeEach
     void setUp() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
@@ -130,9 +136,11 @@ public class CharacterControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void createCharacterTest() throws JsonProcessingException, Exception {
         // Given
         CharacterDTO characterDTO = DTOsUtil.CHARACTER_DTO_ONE;
+                characterDTO.setMovieDTOs(Collections.EMPTY_LIST);
         when(iCharacterService.create(any())).thenReturn(characterDTO);
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/characters")
@@ -147,6 +155,7 @@ public class CharacterControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void linkWithMovieTest() throws JsonProcessingException, Exception{
         // Given
         CharacterDetailsResponse characterDetailsResponse = ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE;
@@ -158,32 +167,38 @@ public class CharacterControllerTest {
                 // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.title").value("titleOne"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
         verify(iCharacterService).linkWithMovie(anyLong(), anyLong());
     }
 
+    // Content type not set --> BUSCAR EL XQ
     @Test
+    @WithMockUser
     public void addMovieTest() throws JsonProcessingException, Exception{
         // Given
         MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
+                movieDTO.setCharacterDTOs(Collections.EMPTY_LIST);
         CharacterDetailsResponse characterDetailsResponse = ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE;
                 characterDetailsResponse.setMovieDTOs(Arrays.asList(movieDTO));
-        when(iCharacterService.addMovie(anyLong(), movieDTO)).thenReturn(characterDetailsResponse);
+        when(iCharacterService.addMovie(anyLong(), eq(movieDTO))).thenReturn(characterDetailsResponse);
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/characters/1")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(movieDTO)))
+                .content(objectMapper.writeValueAsString(movieDTO)))
                 // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.title").value("titleOne"));
-        verify(iCharacterService).addMovie(anyLong(), movieDTO);
+                .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
+        verify(iCharacterService).addMovie(1L, movieDTO);
     }
 
+    // Content type not set --> BUSCAR EL XQ
     @Test
+    @WithMockUser
     public void updateCharacterTest() throws JsonProcessingException, Exception{
         // Given
         CharacterDTO characterDTO = DTOsUtil.CHARACTER_DTO_ONE;
+                characterDTO.setMovieDTOs(Collections.EMPTY_LIST);
         when(iCharacterService.update(characterDTO)).thenReturn(characterDTO);
         // When
         mockMvc.perform(MockMvcRequestBuilders.put("/characters")

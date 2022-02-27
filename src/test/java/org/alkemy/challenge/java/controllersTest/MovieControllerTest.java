@@ -5,11 +5,13 @@ import java.util.Collections;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import org.alkemy.challenge.java.DTOs.CharacterDTO;
 import org.alkemy.challenge.java.DTOs.GenderDTO;
 import org.alkemy.challenge.java.DTOs.MovieDTO;
 import org.alkemy.challenge.java.DTOs.response.MovieDetailsResponse;
+import org.alkemy.challenge.java.annotations.ControllerTest;
 import org.alkemy.challenge.java.services.interfaces.IMovieService;
 import org.alkemy.challenge.java.utils.DTOsUtil;
 import org.alkemy.challenge.java.utils.ResponseUtil;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -27,8 +30,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.mockito.Mockito.*;
 
 //@WebMvcTest(CharacterController.class)
-@SpringBootTest
-@AutoConfigureMockMvc
+//@ExtendWith(SpringExtension.class)
+@ControllerTest
 public class MovieControllerTest {
 
     @Autowired
@@ -41,7 +44,8 @@ public class MovieControllerTest {
 
     @BeforeEach
     void setUp() {
-        this.objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
     }
 
     @Test
@@ -117,9 +121,11 @@ public class MovieControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void createMovieTest() throws JsonProcessingException, Exception {
         // Given
         MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
+                movieDTO.setCharacterDTOs(Collections.EMPTY_LIST);
         when(iMovieService.create(any())).thenReturn(movieDTO);
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies")
@@ -129,11 +135,12 @@ public class MovieControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("titleOne"));
         verify(iMovieService).create(movieDTO);
     }
 
     @Test
+    @WithMockUser
     public void linkWithCharacterTest() throws JsonProcessingException, Exception{
         // Given
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
@@ -145,29 +152,32 @@ public class MovieControllerTest {
                 // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.name").value("nameOne"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.[0].name").value("nameOne"));
         verify(iMovieService).linkWithCharacter(anyLong(), anyLong());
     }
 
     @Test
+    @WithMockUser
     public void addCharacterTest() throws JsonProcessingException, Exception{
         // Given
         CharacterDTO characterDTO = DTOsUtil.CHARACTER_DTO_ONE;
+                characterDTO.setMovieDTOs(Collections.EMPTY_LIST);
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setCharacterDTOs(Arrays.asList(characterDTO));
-        when(iMovieService.addCharacter(anyLong(), characterDTO)).thenReturn(movieDetailsResponse);
+        when(iMovieService.addCharacter(anyLong(), eq(characterDTO))).thenReturn(movieDetailsResponse);
         // When
-        mockMvc.perform(MockMvcRequestBuilders.post("/movies/1&addCharacter")
+        mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/addCharacter")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(characterDTO)))
+                .content(objectMapper.writeValueAsString(characterDTO)))
                 // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.name").value("nameOne"));
-        verify(iMovieService).addCharacter(anyLong(), characterDTO);
+                .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.[0].name").value("nameOne"));
+        verify(iMovieService).addCharacter(1L, characterDTO);
     }
 
     @Test
+    @WithMockUser
     public void linkWithGenderTest() throws JsonProcessingException, Exception{
         // Given
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
@@ -184,27 +194,31 @@ public class MovieControllerTest {
     }
 
     @Test
+    @WithMockUser
     public void addGenderTest() throws JsonProcessingException, Exception{
         // Given
         GenderDTO genderDTO = DTOsUtil.GENDER_DTO_ONE;
+                genderDTO.setMovieDTOs(Collections.EMPTY_LIST);
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setGenderDTO(genderDTO);
-        when(iMovieService.addGender(anyLong(), genderDTO)).thenReturn(movieDetailsResponse);
+        when(iMovieService.addGender(anyLong(), eq(genderDTO))).thenReturn(movieDetailsResponse);
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/addGender")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(genderDTO)))
+                .content(objectMapper.writeValueAsString(genderDTO)))
                 // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genderDTO.name").value("nameOne"));
-        verify(iMovieService).addGender(anyLong(), genderDTO);
+        verify(iMovieService).addGender(1L, genderDTO);
     }
 
     @Test
+    @WithMockUser
     public void updateMovieTest() throws JsonProcessingException, Exception{
         // Given
         MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
+                movieDTO.setCharacterDTOs(Collections.EMPTY_LIST);
         when(iMovieService.update(movieDTO)).thenReturn(movieDTO);
         // When
         mockMvc.perform(MockMvcRequestBuilders.put("/movies")

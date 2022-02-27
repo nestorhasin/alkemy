@@ -1,5 +1,6 @@
 package org.alkemy.challenge.java.repositoriesTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,18 +9,23 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.alkemy.challenge.java.annotations.RepositoryTest;
 import org.alkemy.challenge.java.entities.Gender;
 import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.repositories.IMovieRepository;
+import org.alkemy.challenge.java.utils.EntitiesUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@RepositoryTest
 public class MovieRepositoryTest {
     
     @Autowired
@@ -27,50 +33,61 @@ public class MovieRepositoryTest {
 
     @Test
     public void saveTest(){
-        Movie movie = new Movie();
-            movie.setImage("image movie");
-            movie.setTitle("title movie");
-            movie.setCreationDate(LocalDate.of(2020, 02, 02));
-            movie.setQualification(10);
-        Movie movieFinal = iMovieRepository.save(movie);
-        assertNotNull(movieFinal);
+        Movie movie = EntitiesUtil.MOVIE_ONE;
+        Movie savedMovie = iMovieRepository.save(movie);
+        assertNotNull(savedMovie);
     }
 
     @Test
     public void findAllTest(){
+        Movie movieOne = EntitiesUtil.MOVIE_ONE;
+        Movie movieTwo = EntitiesUtil.MOVIE_TWO;
+        Movie movieThree = EntitiesUtil.MOVIE_THREE;
+        iMovieRepository.save(movieOne);
+        iMovieRepository.save(movieTwo);
+        iMovieRepository.save(movieThree);
         List<Movie> movies = iMovieRepository.findAll();
-        Assertions.assertThat(movies).size().isGreaterThan(0);
+        Assertions.assertThat(movies).size().isGreaterThan(1);
     }
 
     @Test
     public void findById(){
-        Long id = 1L;
-        Optional<Movie> movie = iMovieRepository.findById(id);
-        assertTrue(movie.isPresent());
+        Movie movie = EntitiesUtil.MOVIE_ONE;
+        Movie savedMovie = iMovieRepository.save(movie);
+        Optional<Movie> optionalMovie = iMovieRepository.findById(savedMovie.getId());
+        assertTrue(optionalMovie.isPresent());
     }
 
     @Test
     public void findAllByTitleTest(){
-        String title = "title 2";
-        List<Movie> movie = iMovieRepository.findAllByTitle(title);
-        assertTrue(movie.size() >= 1);
+        Movie movie = EntitiesUtil.MOVIE_ONE;
+        Movie savedMovie = iMovieRepository.save(movie);
+        List<Movie> movies = iMovieRepository.findAllByTitle(movie.getTitle());
+        assertEquals(movies.get(0).getTitle(), movie.getTitle());
     }
 
+    /*
     @Test
     public void findAllByGender(){
-        Gender gender = new Gender(1L, "name 1", "image 1", null);
-        List<Movie> movie = iMovieRepository.findAllByGender(gender);
-        Assertions.assertThat(movie).size().isGreaterThan(0);
+        Gender gender = EntitiesUtil.GENDER_ONE;
+        Movie movie = EntitiesUtil.MOVIE_ONE;
+            movie.setGender(gender);
+            //movie.addGender(gender);
+        Movie savedMovie = iMovieRepository.save(movie);
+        List<Movie> movies = iMovieRepository.findAllByGender(gender);
+        assertEquals(movies.get(0).getTitle(), movie.getTitle());
     }
+    */
 
     @Test
     public void deteleTest(){
-        Long id = 1L;
-        Optional<Movie> movie = iMovieRepository.findById(id);
-        assertTrue(movie.isPresent());
-        iMovieRepository.delete(movie.get());
-        Optional<Movie> movieFinal = iMovieRepository.findById(id);
-        assertFalse(movieFinal.isPresent());
+        Movie movie = EntitiesUtil.MOVIE_TWO;
+        Movie savedMovie = iMovieRepository.save(movie);
+        Optional<Movie> optionalMovie = iMovieRepository.findById(savedMovie.getId());
+        assertTrue(optionalMovie.isPresent());
+        iMovieRepository.delete(optionalMovie.get());
+        Optional<Movie> finalMovie = iMovieRepository.findById(movie.getId());
+        assertFalse(finalMovie.isPresent());
     }
 
 }

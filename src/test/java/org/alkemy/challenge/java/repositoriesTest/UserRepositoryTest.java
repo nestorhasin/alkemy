@@ -7,16 +7,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.alkemy.challenge.java.annotations.RepositoryTest;
 import org.alkemy.challenge.java.entities.User;
 import org.alkemy.challenge.java.repositories.IUserRepository;
+import org.alkemy.challenge.java.utils.EntitiesUtil;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@RepositoryTest
 public class UserRepositoryTest {
     
     @Autowired
@@ -24,71 +30,79 @@ public class UserRepositoryTest {
 
     @Test
     public void saveTest(){
-        User user = new User();
-            user.setName("Julio Cesar");
-            user.setUsername("juliocesar");
-            user.setEmail("juliocesar@gmail.com");
-            user.setPassword("juliocesar");
-        User userFinal = iUserRepository.save(user);
-        assertNotNull(userFinal);
+        User user = EntitiesUtil.USER_ONE;
+        User savedUser = iUserRepository.save(user);
+        assertNotNull(savedUser);
     }
 
     @Test
     public void findAllTest(){
+        User userOne = EntitiesUtil.USER_ONE;
+        User userTwo = EntitiesUtil.USER_TWO;
+        User userThree = EntitiesUtil.USER_THREE;
+        iUserRepository.save(userOne);
+        iUserRepository.save(userTwo);
+        iUserRepository.save(userThree);
         List<User> users = iUserRepository.findAll();
-        assertTrue(users.size() >= 1);
+        Assertions.assertThat(users).size().isGreaterThan(2);
     }
 
     @Test
     public void findByIdTest(){
-        Long id = 1L;
-        Optional<User> user = iUserRepository.findById(id);
-        assertTrue(user.isPresent());
+        User user = EntitiesUtil.USER_THREE;
+        User savedUser = iUserRepository.save(user);
+        Optional<User> optionalUser = iUserRepository.findById(savedUser.getId());
+        assertTrue(optionalUser.isPresent());
     }
 
     @Test
     public void findByUsernameTest(){
-        String username = "nestorhasin";
-        Optional<User> user = iUserRepository.findByUsername(username);
-        assertTrue(user.isPresent());
+        User user = EntitiesUtil.USER_TWO;
+        User savedUser = iUserRepository.save(user);
+        Optional<User> optionalUser = iUserRepository.findByUsername(savedUser.getUsername());
+        assertTrue(optionalUser.isPresent());
     }
 
     @Test
     public void findByEmailTest(){
-        String email = "nestorhasin@gmail.com";
-        Optional<User> user = iUserRepository.findByEmail(email);
-        assertTrue(user.isPresent());
+        User user = EntitiesUtil.USER_ONE;
+        User savedUser = iUserRepository.save(user);
+        Optional<User> optionalUser = iUserRepository.findByEmail(savedUser.getEmail());
+        assertTrue(optionalUser.isPresent());
     }
 
     @Test
     public void findByUsernameOrEmailTest(){
-        String username = "nestorhasin";
-        String email = "nestorhasin@gmail.com";
-        Optional<User> userWithUsername = iUserRepository.findByUsernameOrEmail(username, null);
+        User user = EntitiesUtil.USER_THREE;
+        User savedUser = iUserRepository.save(user);
+        Optional<User> userWithUsername = iUserRepository.findByUsernameOrEmail(savedUser.getUsername(), null);
         assertTrue(userWithUsername.isPresent());
-        Optional<User> userWithEmail = iUserRepository.findByUsernameOrEmail(null, email);
+        Optional<User> userWithEmail = iUserRepository.findByUsernameOrEmail(null, savedUser.getEmail());
         assertTrue(userWithEmail.isPresent());
     }
 
     @Test
     public void existsByUsernameTest(){
-        String username = "nestorhasin";
-        assertTrue(iUserRepository.existsByUsername(username));
+        User user = EntitiesUtil.USER_THREE;
+        User savedUser = iUserRepository.save(user);
+        assertTrue(iUserRepository.existsByUsername(savedUser.getUsername()));
     }
 
     @Test
     public void existsByEmailTest(){
-        String email = "nestorhasin@gmail.com";
-        assertTrue(iUserRepository.existsByEmail(email));
+        User user = EntitiesUtil.USER_TWO;
+        User savedUser = iUserRepository.save(user);
+        assertTrue(iUserRepository.existsByEmail(savedUser.getEmail()));
     }
 
     @Test
     public void deleteTest(){
-        Long id = 1L;
-        Optional<User> user = iUserRepository.findById(id);
-        assertTrue(user.isPresent());
-        iUserRepository.delete(user.get());
-        Optional<User> userFinal = iUserRepository.findById(id);
+        User user = EntitiesUtil.USER_THREE;
+        User savedUser = iUserRepository.save(user);
+        Optional<User> optionalUser = iUserRepository.findById(savedUser.getId());
+        assertTrue(optionalUser.isPresent());
+        iUserRepository.delete(optionalUser.get());
+        Optional<User> userFinal = iUserRepository.findById(savedUser.getId());
         assertFalse(userFinal.isPresent());
     }
 

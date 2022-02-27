@@ -8,16 +8,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
+import org.alkemy.challenge.java.annotations.RepositoryTest;
 import org.alkemy.challenge.java.entities.Role;
 import org.alkemy.challenge.java.repositories.IRoleRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = Replace.NONE)
+@RepositoryTest
 public class RoleRepositoryTest {
     
     @Autowired
@@ -25,40 +30,46 @@ public class RoleRepositoryTest {
 
     @Test
     public void saveTest(){
-        Role role = new Role();
-            role.setName("ROLE_USER");
-        Role roleFinal = iRoleRepository.save(role);
-        assertNotNull(roleFinal);
+        Role role = new Role(null, "ROLE_USER");
+        Role savedRole = iRoleRepository.save(role);
+        assertNotNull(savedRole);
     }
 
     @Test
     public void findAllTest(){
+        Role roleOne = new Role(null, "ROLE_USER");
+        Role roleTwo = new Role(null, "ROLE_ADMIN");
+        iRoleRepository.save(roleOne);
+        iRoleRepository.save(roleTwo);
         List<Role> roles = iRoleRepository.findAll();
-        assertEquals(roles.size(), 2);
+        Assertions.assertThat(roles).size().isGreaterThan(1);
     }
 
     @Test
     public void findById(){
-        Long id = 1L;
-        Optional<Role> role = iRoleRepository.findById(id);
-        assertTrue(role.isPresent());
+        Role role = new Role(1L, "ROLE_USER");
+        Role savedRole = iRoleRepository.save(role);
+        Optional<Role> optionalRole = iRoleRepository.findById(savedRole.getId());
+        assertTrue(optionalRole.isPresent());
     }
 
     @Test
     public void findByNameTest(){
-        String name = "ROLE_ADMIN";
-        Optional<Role> role = iRoleRepository.findByName(name);
-        assertTrue(role.isPresent());
+        Role role = new Role(null, "ROLE_ADMIN");
+        Role savedRole = iRoleRepository.save(role);
+        Optional<Role> optionalRole = iRoleRepository.findByName(role.getName());
+        assertTrue(optionalRole.isPresent());
     }
 
     @Test
     public void deleteTest(){
-        Long id = 2L;
-        Optional<Role> role = iRoleRepository.findById(id);
-        assertTrue(role.isPresent());
-        iRoleRepository.delete(role.get());
-        Optional<Role> roleFinal = iRoleRepository.findById(id);
-        assertFalse(roleFinal.isPresent());
+        Role role = new Role(2L, "ROLE_USER");
+        Role savedRole = iRoleRepository.save(role);
+        Optional<Role> optionalRole = iRoleRepository.findById(savedRole.getId());
+        assertTrue(optionalRole.isPresent());
+        iRoleRepository.delete(optionalRole.get());
+        Optional<Role> finalRole = iRoleRepository.findById(savedRole.getId());
+        assertFalse(finalRole.isPresent());
     }
 
 }
