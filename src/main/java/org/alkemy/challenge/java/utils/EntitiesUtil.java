@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import org.alkemy.challenge.java.entities.Character;
 import org.alkemy.challenge.java.entities.Gender;
 import org.alkemy.challenge.java.entities.Movie;
+import org.alkemy.challenge.java.entities.User;
 
 public class EntitiesUtil {
     
@@ -19,5 +20,9 @@ public class EntitiesUtil {
     public static final Movie MOVIE_ONE = new Movie(1L, "imageOne", "titleOne", LocalDate.of(2001, 01, 01), 1, null, null);
     public static final Movie MOVIE_TWO = new Movie(2L, "imageTwo", "titleTwo", LocalDate.of(2002, 02, 02), 2, null, null);
     public static final Movie MOVIE_THREE = new Movie(3L, "imageThree", "titleThree", LocalDate.of(2003, 03, 03), 3, null, null);
+
+    public static final User USER_ONE = new User(1L, "nameOne", "usernameOne", "emailOne@emailOne.com", "passwordOne", null);
+    public static final User USER_TWO = new User(2L, "nameTwo", "usernameTwo", "emailTwo@emailTwo.com", "passwordTwo", null);
+    public static final User USER_THREE = new User(3L, "nameThree", "usernameThree", "emailThree@emailThree.com", "passwordThree", null);
 
 }

@@ -1,33 +1,20 @@
 package org.alkemy.challenge.java.repositoriesTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.alkemy.challenge.java.annotations.RepositoryTest;
 import org.alkemy.challenge.java.entities.Character;
-import org.alkemy.challenge.java.entities.Movie;
-import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
 import org.alkemy.challenge.java.repositories.ICharacterRepository;
-import org.alkemy.challenge.java.repositories.IMovieRepository;
 import org.alkemy.challenge.java.utils.EntitiesUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @RepositoryTest
 public class CharacterRepositoryTest {

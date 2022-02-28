@@ -30,6 +30,13 @@ public class CharacterServiceImpl implements ICharacterService {
     @Autowired
     private ModelMapper modelMapper;
 
+    // PARA MOCKITO
+    public CharacterServiceImpl(ICharacterRepository iCharacterRepository, IMovieRepository iMovieRepository, ModelMapper modelMapper){
+        this.iCharacterRepository = iCharacterRepository;
+        this.iMovieRepository = iMovieRepository;
+        this.modelMapper = modelMapper;
+    }
+
     @Override
     @Transactional
     public CharacterDTO create(CharacterDTO characterDTO) {

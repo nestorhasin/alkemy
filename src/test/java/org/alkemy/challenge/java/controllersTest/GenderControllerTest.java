@@ -17,8 +17,6 @@ import org.alkemy.challenge.java.utils.ResponseUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -52,9 +50,11 @@ public class GenderControllerTest {
         // Given
         when(iGenderService.read())
                 .thenReturn(Arrays.asList(DTOsUtil.GENDER_DTO_ONE, DTOsUtil.GENDER_DTO_TWO, DTOsUtil.GENDER_DTO_THREE));
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/genders").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
@@ -67,9 +67,11 @@ public class GenderControllerTest {
     public void getGenderByIdTest() throws Exception {
         // Given
         when(iGenderService.readById(1L)).thenReturn(ResponseUtil.GENDER_DETAILS_RESPONSE_ONE);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/genders/1").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
@@ -83,11 +85,13 @@ public class GenderControllerTest {
         GenderDTO genderDTO = DTOsUtil.GENDER_DTO_ONE;
                 genderDTO.setMovieDTOs(Collections.EMPTY_LIST);
         when(iGenderService.create(any())).thenReturn(genderDTO);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/genders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(genderDTO)))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"))
@@ -102,10 +106,12 @@ public class GenderControllerTest {
         GenderDetailsResponse genderDetailsResponse = ResponseUtil.GENDER_DETAILS_RESPONSE_ONE;
                 genderDetailsResponse.setMovieDTOs(Arrays.asList(DTOsUtil.MOVIE_DTO_ONE));
         when(iGenderService.linkWithMovie(anyLong(), anyLong())).thenReturn(genderDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/genders/1/movie/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
@@ -121,11 +127,13 @@ public class GenderControllerTest {
         GenderDetailsResponse genderDetailsResponse = ResponseUtil.GENDER_DETAILS_RESPONSE_ONE;
                 genderDetailsResponse.setMovieDTOs(Arrays.asList(movieDTO));
         when(iGenderService.addMovie(anyLong(), eq(movieDTO))).thenReturn(genderDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/genders/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(movieDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
@@ -139,11 +147,13 @@ public class GenderControllerTest {
         GenderDTO genderDTO = DTOsUtil.GENDER_DTO_ONE;
                 genderDTO.setMovieDTOs(Collections.EMPTY_LIST);
         when(iGenderService.update(genderDTO)).thenReturn(genderDTO);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.put("/genders")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(genderDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"));

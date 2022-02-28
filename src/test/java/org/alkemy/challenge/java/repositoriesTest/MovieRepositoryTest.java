@@ -5,25 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import org.alkemy.challenge.java.annotations.RepositoryTest;
-import org.alkemy.challenge.java.entities.Gender;
 import org.alkemy.challenge.java.entities.Movie;
 import org.alkemy.challenge.java.repositories.IMovieRepository;
 import org.alkemy.challenge.java.utils.EntitiesUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @RepositoryTest
 public class MovieRepositoryTest {
@@ -62,7 +53,7 @@ public class MovieRepositoryTest {
     public void findAllByTitleTest(){
         Movie movie = EntitiesUtil.MOVIE_ONE;
         Movie savedMovie = iMovieRepository.save(movie);
-        List<Movie> movies = iMovieRepository.findAllByTitle(movie.getTitle());
+        List<Movie> movies = iMovieRepository.findAllByTitle(savedMovie.getTitle());
         assertEquals(movies.get(0).getTitle(), movie.getTitle());
     }
 

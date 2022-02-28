@@ -1,5 +1,6 @@
 package org.alkemy.challenge.java.DTOs.response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CharacterDetailsResponse {
+public class CharacterDetailsResponse implements Serializable {
     
     private Long id;
     

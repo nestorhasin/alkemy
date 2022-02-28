@@ -1,6 +1,5 @@
 package org.alkemy.challenge.java.repositoriesTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,14 +12,7 @@ import org.alkemy.challenge.java.entities.Role;
 import org.alkemy.challenge.java.repositories.IRoleRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @RepositoryTest
 public class RoleRepositoryTest {
@@ -57,7 +49,7 @@ public class RoleRepositoryTest {
     public void findByNameTest(){
         Role role = new Role(null, "ROLE_ADMIN");
         Role savedRole = iRoleRepository.save(role);
-        Optional<Role> optionalRole = iRoleRepository.findByName(role.getName());
+        Optional<Role> optionalRole = iRoleRepository.findByName(savedRole.getName());
         assertTrue(optionalRole.isPresent());
     }
 

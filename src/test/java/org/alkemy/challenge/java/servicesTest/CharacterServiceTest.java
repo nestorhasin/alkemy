@@ -78,7 +78,6 @@ public class CharacterServiceTest {
         verify(iCharacterRepository).findAll();
     }
 
-    @MockitoSettings(strictness = Strictness.WARN)
     @Test
     public void createTest(){
         // Given

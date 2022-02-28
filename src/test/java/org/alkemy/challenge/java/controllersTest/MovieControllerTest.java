@@ -18,8 +18,6 @@ import org.alkemy.challenge.java.utils.ResponseUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -53,9 +51,11 @@ public class MovieControllerTest {
         // Given
         when(iMovieService.read()).thenReturn(Arrays.asList(ResponseUtil.MOVIE_RESPONSE_ONE,
                 ResponseUtil.MOVIE_RESPONSE_TWO, ResponseUtil.MOVIE_RESPONSE_THREE));
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/movies").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].image").value("imageOne"))
@@ -68,9 +68,11 @@ public class MovieControllerTest {
     public void getMoviesByNameTest() throws Exception {
         // Given
         when(iMovieService.readAllByTitle("nameTwo")).thenReturn(Collections.singletonList(DTOsUtil.MOVIE_DTO_TWO));
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/movies?name=nameTwo").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("titleTwo"))
@@ -82,9 +84,11 @@ public class MovieControllerTest {
     public void getMoviesByGenderTest() throws Exception {
         // Given
         when(iMovieService.readAllByGender(1L)).thenReturn(Collections.singletonList(DTOsUtil.MOVIE_DTO_THREE));
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/movies?gender=1").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("titleThree"))
@@ -93,13 +97,15 @@ public class MovieControllerTest {
     }
 
     @Test
-    public void getByMoviesByOrderTest() throws Exception {
+    public void getMoviesByOrderTest() throws Exception {
         // Given
         when(iMovieService.readByOrder("DESC"))
                 .thenReturn(Arrays.asList(DTOsUtil.MOVIE_DTO_THREE, DTOsUtil.MOVIE_DTO_TWO, DTOsUtil.MOVIE_DTO_ONE));
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/movies?order=DESC").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("titleThree"))
@@ -111,9 +117,11 @@ public class MovieControllerTest {
     public void getMovieByIdTest() throws Exception {
         // Given
         when(iMovieService.readById(1L)).thenReturn(ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/movies/1").contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("titleOne"));
@@ -127,11 +135,13 @@ public class MovieControllerTest {
         MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
                 movieDTO.setCharacterDTOs(Collections.EMPTY_LIST);
         when(iMovieService.create(any())).thenReturn(movieDTO);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(movieDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"))
@@ -146,10 +156,12 @@ public class MovieControllerTest {
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setCharacterDTOs(Arrays.asList(DTOsUtil.CHARACTER_DTO_ONE));
         when(iMovieService.linkWithCharacter(anyLong(), anyLong())).thenReturn(movieDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/character/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.[0].name").value("nameOne"));
@@ -165,11 +177,13 @@ public class MovieControllerTest {
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setCharacterDTOs(Arrays.asList(characterDTO));
         when(iMovieService.addCharacter(anyLong(), eq(characterDTO))).thenReturn(movieDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/addCharacter")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(characterDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.characterDTOs.[0].name").value("nameOne"));
@@ -183,10 +197,12 @@ public class MovieControllerTest {
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setGenderDTO(DTOsUtil.GENDER_DTO_ONE);
         when(iMovieService.linkWithGender(anyLong(), anyLong())).thenReturn(movieDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/gender/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genderDTO.name").value("nameOne"));
@@ -202,11 +218,13 @@ public class MovieControllerTest {
         MovieDetailsResponse movieDetailsResponse = ResponseUtil.MOVIE_DETAILS_RESPONSE_ONE;
                 movieDetailsResponse.setGenderDTO(genderDTO);
         when(iMovieService.addGender(anyLong(), eq(genderDTO))).thenReturn(movieDetailsResponse);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/movies/1/addGender")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(genderDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genderDTO.name").value("nameOne"));
@@ -220,11 +238,13 @@ public class MovieControllerTest {
         MovieDTO movieDTO = DTOsUtil.MOVIE_DTO_ONE;
                 movieDTO.setCharacterDTOs(Collections.EMPTY_LIST);
         when(iMovieService.update(movieDTO)).thenReturn(movieDTO);
+        
         // When
         mockMvc.perform(MockMvcRequestBuilders.put("/movies")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(movieDTO)))
-                // Then
+        
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"));

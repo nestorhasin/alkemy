@@ -1,6 +1,5 @@
 package org.alkemy.challenge.java.repositoriesTest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,19 +9,11 @@ import java.util.Optional;
 
 import org.alkemy.challenge.java.annotations.RepositoryTest;
 import org.alkemy.challenge.java.entities.Gender;
-import org.alkemy.challenge.java.exceptions.ResourceNotFoundException;
 import org.alkemy.challenge.java.repositories.IGenderRepository;
 import org.alkemy.challenge.java.utils.EntitiesUtil;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @RepositoryTest
 public class GenderRepositoryTest {

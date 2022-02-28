@@ -9,14 +9,10 @@ import org.alkemy.challenge.java.utils.DTOsUtil;
 import org.alkemy.challenge.java.utils.ResponseUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -56,7 +52,8 @@ public class CharacterControllerTest {
                 ResponseUtil.CHARACTER_RESPONSE_TWO, ResponseUtil.CHARACTER_RESPONSE_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
@@ -72,7 +69,8 @@ public class CharacterControllerTest {
                 .thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_TWO));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?name=nameTwo").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameTwo"))
@@ -86,7 +84,8 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByAge(3)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?age=3").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
@@ -100,7 +99,8 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByMovie(1L)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_THREE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?movie=1").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameThree"))
@@ -114,7 +114,8 @@ public class CharacterControllerTest {
         when(iCharacterService.readAllByWeight(1.0)).thenReturn(Collections.singletonList(DTOsUtil.CHARACTER_DTO_ONE));
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters?weight=1.0").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("nameOne"))
@@ -128,7 +129,8 @@ public class CharacterControllerTest {
         when(iCharacterService.readById(1L)).thenReturn(ResponseUtil.CHARACTER_DETAILS_RESPONSE_ONE);
         // When
         mockMvc.perform(MockMvcRequestBuilders.get("/characters/1").contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("nameOne"));
@@ -146,7 +148,8 @@ public class CharacterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/characters")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(characterDTO)))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"))
@@ -164,7 +167,8 @@ public class CharacterControllerTest {
         // When
         mockMvc.perform(MockMvcRequestBuilders.post("/characters/1/movie/1")
                 .contentType(MediaType.APPLICATION_JSON))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
@@ -185,7 +189,8 @@ public class CharacterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/characters/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(movieDTO)))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.movieDTOs.[0].title").value("titleOne"));
@@ -204,7 +209,8 @@ public class CharacterControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put("/characters")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsBytes(characterDTO)))
-                // Then
+                
+        // Then
                 .andExpect(MockMvcResultMatchers.status().isAccepted())
                 .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.image").value("imageOne"));

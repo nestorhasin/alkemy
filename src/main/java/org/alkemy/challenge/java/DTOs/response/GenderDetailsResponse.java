@@ -1,5 +1,6 @@
 package org.alkemy.challenge.java.DTOs.response;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GenderDetailsResponse {
+public class GenderDetailsResponse implements Serializable {
     
     private Long id;
     

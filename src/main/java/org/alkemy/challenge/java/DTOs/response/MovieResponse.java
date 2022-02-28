@@ -1,5 +1,6 @@
 package org.alkemy.challenge.java.DTOs.response;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MovieResponse {
+public class MovieResponse implements Serializable {
     
     private String image;
     private String title;

@@ -1,5 +1,6 @@
 package org.alkemy.challenge.java.DTOs.response;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class MovieDetailsResponse {
+public class MovieDetailsResponse implements Serializable {
 
     private Long id;
     
