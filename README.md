@@ -263,4 +263,17 @@ Check src/main/resources/postman_collection.json
 Check http://localhost:8080/open-api/swagger-ui-custom.html y http://localhost:8080/open-api/api-docs
 
 ## TESTS
-Se realizaron utilizando JUnit y Mockito bajo el contexto de Spring.
+Se realizaron Unit e Integration Tests utilizando JUnit y Mockito bajo el contexto de Spring.
+
+## REPORT
+Se generan reportes mediante las siguiente herramientas:
+
+### JaCoCo with SureFire
+- mvn clean test (unit test report)
+
+Check target/site/jacoco-ut/index.html
+
+### JaCoCo with Failsafe
+- mvn clean verify (integration test report)
+
+Check target/site/jacoco-it/index.html
